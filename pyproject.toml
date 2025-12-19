@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "libncker"
+version = "0.1.0"
+description = "Tissue-exclusive lncRNAs and cis-neighborhood scoring from IDEAMEX intersect tables."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Yahel Godinez" }]
+dependencies = []
+
+[project.scripts]
+libncker = "libncker.__main__:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
