@@ -9,7 +9,7 @@ description = "Tissue-exclusive lncRNAs and cis-neighborhood scoring from IDEAME
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
-authors = [{ name = "Yahel Godinez" }]
+authors = [{ name = "Yahel Godinez", email = "yahel.godinez@ibt.unam.mx" }]
 dependencies = []
 
 [project.scripts]
