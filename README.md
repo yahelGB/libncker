@@ -76,7 +76,7 @@ libncker run \
   --k 5
 ```
 
-Note: if your GFF is compressed (.gff.gz), decompress first:
+> Note: if your GFF is compressed (.gff.gz), decompress first:
 ```bash
 gunzip -c genome.gff.gz > genome.gff
 ```
