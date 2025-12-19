@@ -58,7 +58,7 @@ libncker run \
   --gff /path/to/genome.gff \
   --lnc-ids-from-gff \
   --level transcript \
-  --intersects /path/to/*vs*_intersect.txt \
+  --intersects /path/to/*_intersect.txt \
   --outdir results \
   --mode strict \
   --k 5
@@ -76,7 +76,7 @@ libncker run \
   --k 5
 ```
 
-#### Note: if your GFF is compressed (.gff.gz), decompress first:
+Note: if your GFF is compressed (.gff.gz), decompress first:
 ```bash
 gunzip -c genome.gff.gz > genome.gff
 ```
@@ -97,7 +97,7 @@ libncker extract-ids \
 libncker exclusive \
   --lnc-ids lncRNA_IDs.txt \
   --level transcript \
-  --intersects /path/to/*vs*_intersect.txt \
+  --intersects /path/to/*_intersect.txt \
   --outdir results \
   --mode strict
 ```
@@ -106,7 +106,7 @@ Lenient mode (for incomplete pairwise sets or large N):
 libncker exclusive \
   --lnc-ids lncRNA_IDs.txt \
   --level transcript \
-  --intersects /path/to/*vs*_intersect.txt \
+  --intersects /path/to/*_intersect.txt \
   --outdir results \
   --mode lenient \
   --min-required 3
@@ -127,7 +127,7 @@ libncker run \
   --gff /path/to/genome.gff \
   --lnc-ids-from-gff \
   --level transcript \
-  --intersects /path/to/*vs*_intersect.txt \
+  --intersects /path/to/*_intersect.txt \
   --outdir results \
   --mode strict \
   --k 5
@@ -138,18 +138,18 @@ libncker run \
 ### Intersect tables (*_intersect.txt)
 
 Each file should include:
-	•	an ID column (lncRNA ID)
-	•	an expression label column with values like:
-	•	Up_<tissueA>_Down_<tissueB>
-	•	Down_<tissueA>_Up_<tissueB>
+- an ID column (lncRNA ID)
+- an expression label column with values like:
+- `Up_<tissueA>_Down_<tissueB>`
+- `Down_<tissueA>_Up_<tissueB>`
 
 Libncker infers tissue names from those labels and auto-detects the relevant columns.
 
 ### GFF (.gff / .gff3)
 
 Used to:
-	•	extract lncRNA IDs (extract-ids / --lnc-ids-from-gff)
-	•	locate lncRNAs and mRNAs on contigs to compute neighbors (neighbors)
+- extract lncRNA IDs (extract-ids / --lnc-ids-from-gff)
+- locate lncRNAs and mRNAs on contigs to compute neighbors (neighbors)
 
 ---
 
@@ -160,7 +160,7 @@ Used to:
 - neighbors.tsv
 - neighbors.summary.tsv
 - summary.tsv
--<tissue>_cis_regulation_module_output.txt
+- <tissue>_cis_regulation_module_output.txt
 
 ---
 
@@ -171,18 +171,18 @@ Let N be the number of tissues detected from the intersect labels.
 In strict mode, an lncRNA is “exclusive” to a tissue if it appears consistently as Up in that tissue across all N-1 relevant pairwise comparisons.
 
 cis_score counts evidence across those comparisons; therefore the theoretical maximum in strict mode is:
-	•	max(cis_score) = N - 1
+- max(cis_score) = N - 1
 
 For cross-dataset comparisons, consider reporting:
-	•	cis_score_norm = cis_score / (N - 1)
+- cis_score_norm = cis_score / (N - 1)
 
 ---
 
 ## Common pitfalls
-	1.	Do NOT include combined_intersect.txt together with pairwise intersects in strict mode.
-Use: *vs*_intersect.txt
-	2.	Do not mix ID levels:
-	•	--level transcript expects transcript IDs (e.g. XR_...)
-	•	--level gene expects gene IDs (e.g. gene-LOC...)
-	3.	If you lack some pairwise comparisons, strict mode will push many IDs into
+1) Do NOT include combined_intersect.txt together with pairwise intersects in strict mode.
+Use: *_intersect.txt
+2) Do not mix ID levels:
+- --level transcript expects transcript IDs (e.g. XR_...)
+- --level gene expects gene IDs (e.g. gene-LOC...)
+3) If you lack some pairwise comparisons, strict mode will push many IDs into
 *_up_consistent_but_incomplete.txt. Use --mode lenient --min-required X.
