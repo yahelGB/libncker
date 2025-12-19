@@ -155,12 +155,13 @@ Used to:
 
 ## Outputs
 ### In --outdir:
-	•	<tissue>_exclusive_lncRNAs_<mode>.txt
-	•	<tissue>_up_consistent_but_incomplete.txt
-	•	neighbors.tsv
-	•	neighbors.summary.tsv
-	•	summary.tsv
-	•	<tissue>_cis_regulation_module_output.txt
+- <tissue>_exclusive_lncRNAs_<mode>.txt
+- <tissue>_up_consistent_but_incomplete.txt
+- neighbors.tsv
+- neighbors.summary.tsv
+- summary.tsv
+-<tissue>_cis_regulation_module_output.txt
+
 ---
 
 ## How scoring works
