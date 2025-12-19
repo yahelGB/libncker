@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Local envs
+.venv/
+venv/
+
+# Build / dist
+build/
+dist/
+*.egg-info/
+
+# Outputs (no versionar resultados)
+results*/
+test_*/
+
+# Big reference annotation files (no subir a GitHub)
+*.gff
+*.gff3
