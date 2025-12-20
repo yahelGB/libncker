@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "libncker"
 version = "0.1.0"
-description = "Tissue-exclusive lncRNAs and cis-neighborhood scoring from IDEAMEX intersect tables."
+description = "Tissue-specific lncRNA discovery and cis-neighborhood scoring from RNA-seq differential expression analysis."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
