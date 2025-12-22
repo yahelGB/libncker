@@ -92,7 +92,7 @@ libncker extract-ids \
   --out lncRNA_IDs.txt \
   --summary lncRNA_IDs.summary.tsv
 ```
-### 2) Compute tissue-exclusive lncRNAs from IDEAMEX intersects
+### 2) Compute tissue-exclusive lncRNAs from intersect tables
 ```bash
 libncker exclusive \
   --lnc-ids lncRNA_IDs.txt \
@@ -148,8 +148,8 @@ Libncker infers tissue names from those labels and auto-detects the relevant col
 ### GFF (.gff/.gff3)
 
 Used to:
-- extract lncRNA IDs (extract-ids / --lnc-ids-from-gff)
-- locate lncRNAs and mRNAs on contigs to compute neighbors
+- extract lncRNA IDs (`extract-ids` / `--lnc-ids-from-gff`)
+- locate lncRNAs and mRNAs on contigs/chromosomes to compute neighbors
 
 ---
 
