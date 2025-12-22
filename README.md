@@ -140,8 +140,8 @@ libncker run \
 Each file should include:
 - an ID column (lncRNA ID)
 - an expression label column with values like:
- - `Up_<tissueA>_Down_<tissueB>`
- - `Down_<tissueA>_Up_<tissueB>`
+  - `Up_<tissueA>_Down_<tissueB>`
+  - `Down_<tissueA>_Up_<tissueB>`
 
 Libncker infers tissue names from those labels and auto-detects the relevant columns.
 
