@@ -1,7 +1,7 @@
 # libncker
 
 Libncker is a lightweight CLI to:
-1) identify tissue-exclusive lncRNAs from IDEAMEX intersect tables, and
+1) identify tissue-exclusive lncRNAs from differential expression intersect tables, and
 2) compute a cis-neighborhood report (K nearest mRNAs) plus a simple `cis_score`.
 
 ---
@@ -70,7 +70,7 @@ libncker run \
   --gff /path/to/genome.gff \
   --lnc-ids-from-gff \
   --level gene \
-  --intersects /path/to/*vs*_intersect.txt \
+  --intersects /path/to/*_intersect.txt \
   --outdir results \
   --mode strict \
   --k 5
@@ -145,11 +145,11 @@ Each file should include:
 
 Libncker infers tissue names from those labels and auto-detects the relevant columns.
 
-### GFF (.gff / .gff3)
+### GFF (.gff/.gff3)
 
 Used to:
 - extract lncRNA IDs (extract-ids / --lnc-ids-from-gff)
-- locate lncRNAs and mRNAs on contigs to compute neighbors (neighbors)
+- locate lncRNAs and mRNAs on contigs to compute neighbors
 
 ---
 
