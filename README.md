@@ -154,13 +154,13 @@ Used to:
 ---
 
 ## Outputs
-### In --outdir:
-- <tissue>_exclusive_lncRNAs_<mode>.txt
-- <tissue>_up_consistent_but_incomplete.txt
-- neighbors.tsv
-- neighbors.summary.tsv
-- summary.tsv
-- <tissue>_cis_regulation_module_output.txt
+### In `--outdir`:
+- `<tissue>_exclusive_lncRNAs_<mode>.txt`
+- `<tissue>_up_consistent_but_incomplete.txt`
+- `neighbors.tsv`
+- `neighbors.summary.tsv`
+- `summary.tsv`
+- `<tissue>_cis_regulation_module_output.txt`
 
 ---
 
@@ -180,9 +180,9 @@ For cross-dataset comparisons, consider reporting:
 
 ## Common pitfalls
 1) Do NOT include combined_intersect.txt together with pairwise intersects in strict mode.
-Use: *_intersect.txt
+Use: `*_intersect.txt`
 2) Do not mix ID levels:
-- --level transcript expects transcript IDs (e.g. XR_...)
-- --level gene expects gene IDs (e.g. gene-LOC...)
+- `--level transcript` expects transcript IDs (e.g. XR_...)
+- `--level gene` expects gene IDs (e.g. gene-LOC...)
 3) If you lack some pairwise comparisons, strict mode will push many IDs into
-*_up_consistent_but_incomplete.txt. Use --mode lenient --min-required X.
+`*_up_consistent_but_incomplete.txt`. Use `--mode lenient` `--min-required X`.
