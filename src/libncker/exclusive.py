@@ -27,7 +27,7 @@ def run_exclusive(
     gff: Optional[Path] = None,
 ) -> None:
     """
-    Computes tissue-exclusive lncRNAs from IDEAMEX *_intersect.txt tables.
+    Computes tissue-exclusive lncRNAs from intersect tables.
 
     level:
       - transcript: IDs are expected to match intersect ID column directly (XR_/NR_/etc)

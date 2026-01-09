@@ -13,7 +13,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="cmd", required=True)
 
     # exclusive
-    ex = sub.add_parser("exclusive", help="Compute tissue-exclusive lncRNAs from IDEAMEX intersects.")
+    ex = sub.add_parser("exclusive", help="Compute tissue-exclusive lncRNAs from intersects tables.")
     ex.add_argument("--lnc-ids", required=True, help="Path to lncRNA IDs file (one ID per line).")
     ex.add_argument("--intersects", required=True, nargs="+", help="One or more *_intersect.txt files.")
     ex.add_argument("--outdir", required=True, help="Output directory.")
