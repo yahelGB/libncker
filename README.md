@@ -21,7 +21,7 @@ Libncker is a lightweight CLI to:
 
 ## Install
 
-Installation note
+**Installation note**
 On some Debian/Ubuntu systems, Python is marked as externally managed (PEP 668).
 In that case, please install using a virtual environment, conda, or pipx, or ensure python3-full is available.
 
