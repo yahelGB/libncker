@@ -1,9 +1,10 @@
 # libncker
 
 Libncker is a lightweight CLI to:
-1) identify tissue-exclusive lncRNAs from differential expression intersect tables, and
-2) compute a cis-neighborhood report (K nearest mRNAs) plus a simple `cis_score`, and
-3) summarize intergenic or intron-length distributions with geometric means.
+1) identify tissue-exclusive lncRNAs from differential expression intersect tables,
+2) compute a cis-neighborhood report (K nearest mRNAs) plus a simple `cis_score`,
+3) summarize intergenic or intron-length distributions with geometric means, and
+4) annotate differentially expressed mRNAs with NCBI gene summaries.
 
 ---
 
@@ -11,6 +12,13 @@ Libncker is a lightweight CLI to:
 - [Install](#install)
 - [Quickstart](#quickstart)
 - [Commands](#commands)
+  - [1) extract-ids](#1-extract-lncrna-ids-from-gff)
+  - [2) exclusive](#2-compute-tissue-exclusive-lncrnas-from-intersect-tables)
+  - [3) neighbors](#3-compute-neighbors--cis-module-output)
+  - [4) run](#4-run-everything-end-to-end)
+  - [5) intergenic-stats](#5-summarize-intergenic-distances-from-a-gff)
+  - [6) intron-stats](#6-summarize-intron-lengths-from-a-tsv-column)
+  - [7) annotate](#7-annotate-de-mrnas-with-ncbi-gene-summaries)
 - [Inputs](#inputs)
 - [Outputs](#outputs)
 - [How scoring works](#how-scoring-works)
@@ -153,6 +161,33 @@ libncker intron-stats \
   --column-index 8 \
   --summary results/intron.summary.tsv
 ```
+### 7) Annotate DE mRNAs with NCBI gene summaries
+
+Reads all `*_cis_regulation_module_output.txt` files from a directory, keeps only
+differentially expressed (`DE_status == DE`) mRNAs, and fetches the NCBI gene summary
+for each one. Produces one TSV per tissue.
+
+```bash
+libncker annotate \
+  --cis-dir results/ \
+  --outdir results/annotations/
+```
+
+With an NCBI API key (raises rate limit from 3 to 10 requests/sec):
+```bash
+libncker annotate \
+  --cis-dir results/ \
+  --outdir results/annotations/ \
+  --ncbi-api-key YOUR_KEY
+```
+
+Output files: `<tissue>_de_mrna_annotations.tsv` — one file per tissue found, one row
+per unique mRNA, with columns: `mRNA_ID`, `product`, `lncRNA_IDs`, `mRNA_positions`,
+`ncbi_summary`.
+
+Works with any number of tissues; no configuration needed.
+
+> **Note:** Uses only Python standard library — no extra packages required.
 ---
 
 ## Inputs
@@ -187,6 +222,9 @@ Used to:
 - `intron.summary.tsv` if requested
 - `summary.tsv`
 - `<tissue>_cis_regulation_module_output.txt`
+
+### From `annotate`:
+- `<tissue>_de_mrna_annotations.tsv`
 
 ---
 

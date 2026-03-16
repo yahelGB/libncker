@@ -3,9 +3,11 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from libncker.annotate import run_annotate
 from libncker.exclusive import run_exclusive
 from libncker.gff_utils import extract_lncrna_ids_from_gff, write_extract_ids_summary
 from libncker.neighbors import run_neighbors
+from libncker.stats import run_intergenic_stats, run_intron_stats
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -38,6 +40,26 @@ def build_parser() -> argparse.ArgumentParser:
     ei.add_argument("--level", choices=["transcript", "gene"], default="transcript")
     ei.add_argument("--summary", required=False, help="Optional summary TSV path.")
 
+    ig = sub.add_parser("intergenic-stats", help="Compute mean, median, and geometric mean intergenic distances from a GFF.")
+    ig.add_argument("--gff", required=True, help="Genome annotation GFF.")
+    ig.add_argument("--summary", required=False, help="Optional summary TSV path.")
+    ig.add_argument("--distances-out", required=False, help="Optional detailed intergenic distances TSV path.")
+
+    intron = sub.add_parser("intron-stats", help="Compute median and geometric mean intron lengths from a TSV column.")
+    intron.add_argument("--tsv", required=True, help="Input TSV file.")
+    intron.add_argument("--column-index", type=int, default=8, help="1-based column index with intron lengths (default: 8).")
+    intron.add_argument("--summary", required=False, help="Optional summary TSV path.")
+
+    # annotate
+    an = sub.add_parser(
+        "annotate",
+        help="Annotate DE mRNAs from cis module outputs with NCBI gene summaries and Claude tissue-relevance annotations.",
+    )
+    an.add_argument("--cis-dir", required=True, help="Directory containing *_cis_regulation_module_output.txt files.")
+    an.add_argument("--outdir", required=True, help="Output directory for per-tissue annotation TSV files.")
+    an.add_argument("--ncbi-api-key", default="", help="NCBI API key (optional; raises rate limit from 3 to 10 req/s).")
+    an.add_argument("--delay", type=float, default=0.4, help="Seconds between NCBI requests (default: 0.4).")
+
     # run = full pipeline
     runp = sub.add_parser("run", help="Run full pipeline: (IDs) -> exclusive -> cis module.")
     runp.add_argument("--gff", required=True, help="Genome annotation GFF.")
@@ -50,6 +72,13 @@ def build_parser() -> argparse.ArgumentParser:
     runp.add_argument("--mode", choices=["strict", "lenient"], default="strict")
     runp.add_argument("--min-required", type=int, default=None)
     runp.add_argument("--k", type=int, default=5, help="Neighbors K (default: 5).")
+    runp.add_argument("--intron-tsv", required=False, help="Optional TSV for intron-length stats during the full run.")
+    runp.add_argument(
+        "--intron-column-index",
+        type=int,
+        default=8,
+        help="1-based intron-length column for --intron-tsv (default: 8).",
+    )
 
     return p
 
@@ -57,6 +86,15 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
+
+    if args.cmd == "annotate":
+        run_annotate(
+            cis_dir=Path(args.cis_dir),
+            outdir=Path(args.outdir),
+            ncbi_api_key=args.ncbi_api_key,
+            delay=args.delay,
+        )
+        return
 
     if args.cmd == "exclusive":
         gff_path = Path(args.gff) if args.gff else None
@@ -91,6 +129,22 @@ def main() -> None:
                 f.write(x + "\n")
         if args.summary:
             write_extract_ids_summary(Path(args.summary), Path(args.gff), args.level, stats)
+        return
+
+    if args.cmd == "intergenic-stats":
+        run_intergenic_stats(
+            gff=Path(args.gff),
+            out_summary=Path(args.summary) if args.summary else None,
+            out_distances=Path(args.distances_out) if args.distances_out else None,
+        )
+        return
+
+    if args.cmd == "intron-stats":
+        run_intron_stats(
+            tsv=Path(args.tsv),
+            column_index=args.column_index,
+            out_summary=Path(args.summary) if args.summary else None,
+        )
         return
 
     if args.cmd == "run":
@@ -132,6 +186,19 @@ def main() -> None:
             k=args.k,
             exclusive_level=args.level,
         )
+
+        run_intergenic_stats(
+            gff=Path(args.gff),
+            out_summary=outdir / "intergenic.summary.tsv",
+            out_distances=outdir / "intergenic.distances.tsv",
+        )
+
+        if args.intron_tsv:
+            run_intron_stats(
+                tsv=Path(args.intron_tsv),
+                column_index=args.intron_column_index,
+                out_summary=outdir / "intron.summary.tsv",
+            )
         return
 
 
