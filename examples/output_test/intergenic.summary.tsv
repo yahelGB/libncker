@@ -1,0 +1,9 @@
+metric	value
+input_gff	examples/data_test/GCF_003789085.1_ASM378908v1_genomic.gff.gz
+n_intergenic_distances	24563
+mean_bp	30949.274926
+median_bp	8723.000000
+geometric_mean_bp	8043.800297
+mean_kb	30.949275
+median_kb	8.723000
+geometric_mean_kb	8.043800

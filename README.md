@@ -2,7 +2,8 @@
 
 Libncker is a lightweight CLI to:
 1) identify tissue-exclusive lncRNAs from differential expression intersect tables, and
-2) compute a cis-neighborhood report (K nearest mRNAs) plus a simple `cis_score`.
+2) compute a cis-neighborhood report (K nearest mRNAs) plus a simple `cis_score`, and
+3) summarize intergenic or intron-length distributions with geometric means.
 
 ---
 
@@ -80,10 +81,7 @@ libncker run \
   --k 5
 ```
 
-> Note: if your GFF is compressed (.gff.gz), decompress first:
-```bash
-gunzip -c genome.gff.gz > genome.gff
-```
+Compressed `.gff.gz` inputs are supported directly.
 ---
 
 ## Commands
@@ -136,6 +134,25 @@ libncker run \
   --mode strict \
   --k 5
 ```
+This now also writes:
+- `intergenic.summary.tsv`
+- `intergenic.distances.tsv`
+- `intron.summary.tsv` if `--intron-tsv` is provided
+
+### 5) Summarize intergenic distances from a GFF
+```bash
+libncker intergenic-stats \
+  --gff /path/to/genome.gff.gz \
+  --summary results/intergenic.summary.tsv \
+  --distances-out results/intergenic.distances.tsv
+```
+### 6) Summarize intron lengths from a TSV column
+```bash
+libncker intron-stats \
+  --tsv /path/to/introns.tsv \
+  --column-index 8 \
+  --summary results/intron.summary.tsv
+```
 ---
 
 ## Inputs
@@ -154,6 +171,8 @@ Libncker infers tissue names from those labels and auto-detects the relevant col
 Used to:
 - extract lncRNA IDs (`extract-ids` / `--lnc-ids-from-gff`)
 - locate lncRNAs and mRNAs on contigs/chromosomes to compute neighbors
+- compute intergenic distance statistics (`intergenic-stats`)
+- optionally compute intron-length statistics during `run` with `--intron-tsv`
 
 ---
 
@@ -163,6 +182,9 @@ Used to:
 - `<tissue>_up_consistent_but_incomplete.txt`
 - `neighbors.tsv`
 - `neighbors.summary.tsv`
+- `intergenic.summary.tsv`
+- `intergenic.distances.tsv`
+- `intron.summary.tsv` if requested
 - `summary.tsv`
 - `<tissue>_cis_regulation_module_output.txt`
 

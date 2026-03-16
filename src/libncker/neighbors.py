@@ -8,7 +8,7 @@ from urllib.parse import unquote
 
 from libncker.expr import parse_expression
 from libncker.gff_utils import build_lnc_gene_to_transcripts, norm_rna_id, parse_attrs
-from libncker.io_utils import iter_tsv_rows
+from libncker.io_utils import iter_tsv_rows, open_text
 
 
 @dataclass(frozen=True)
@@ -22,7 +22,7 @@ class Feature:
 
 
 def iter_gff_features(gff: Path) -> Iterator[Feature]:
-    with gff.open("r", encoding="utf-8", errors="replace") as f:
+    with open_text(gff) as f:
         for line in f:
             if not line.strip() or line.startswith("#"):
                 continue

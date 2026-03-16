@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterator, Set, Tuple
 
+from libncker.io_utils import open_text
+
 
 @dataclass(frozen=True)
 class GffFeature:
@@ -31,7 +33,7 @@ def norm_rna_id(raw: str) -> str:
 
 
 def iter_gff(gff: Path) -> Iterator[GffFeature]:
-    with gff.open("r", encoding="utf-8", errors="replace") as f:
+    with open_text(gff) as f:
         for line in f:
             if not line.strip() or line.startswith("#"):
                 continue

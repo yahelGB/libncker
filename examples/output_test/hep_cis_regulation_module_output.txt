@@ -1,0 +1,311 @@
+Contig	lncRNA_ID	lncRNA_strand	mRNA_ID	mRNA_strand	mRNA_position	DE_status	cis_score	distance_Kb	product
+NW_020872759.1	XR_003474979.1	-	XM_027351485.1	+	1_U	DE	3	10.105	inversin-A-like
+NW_020872759.1	XR_003474979.1	-	XM_027351493.1	+	2_U	not_DE	0	133.427	uncharacterized LOC113800691
+NW_020872759.1	XR_003474979.1	-	XM_027351488.1	-	1_D	DE	3	2.493	ankyrin-1-like
+NW_020872759.1	XR_003474979.1	-	XM_027351486.1	+	2_D	DE	0	118.882	bicaudal D-related protein homolog
+NW_020872759.1	XR_003474979.1	-	XM_027351487.1	-	3_D	not_DE	0	143.141	uncharacterized LOC113800683
+NW_020872759.1	XR_003474979.1	-	XM_027351482.1	-	4_D	DE	0	170.042	uncharacterized LOC113800673
+NW_020872759.1	XR_003474979.1	-	XM_027351484.1	-	5_D	not_DE	0	178.174	caltrin-like protein 2
+NW_020872814.1	XR_003475024.1	+	XM_027352018.1	+	1_D	DE	0	99.638	kynureninase-like
+NW_020872814.1	XR_003475024.1	+	XM_027352023.1	-	2_D	not_DE	0	226.697	glutamate-rich WD repeat-containing protein 1-like
+NW_020872814.1	XR_003475024.1	+	XM_027352017.1	+	3_D	not_DE	0	235.725	protein SMG8-like
+NW_020872814.1	XR_003475024.1	+	XM_027352016.1	-	4_D	DE	0	258.334	SNF-related serine/threonine-protein kinase-like
+NW_020872814.1	XR_003475024.1	+	XM_027352019.1	-	5_D	not_DE	0	453.803	uncharacterized LOC113801214
+NW_020872814.1	XR_003475025.1	+	XM_027352022.1	+	1_U	DE	3	4.337	uncharacterized LOC113801216
+NW_020872851.1	XR_003475373.1	-	XM_027352317.1	-	1_U	DE	2	35.378	ATP-binding cassette sub-family A member 5-like, transcript variant X3
+NW_020872851.1	XR_003475373.1	-	XM_027352314.1	-	2_U	not_DE	0	122.830	gastrula zinc finger protein XlCGF9.1-like
+NW_020872851.1	XR_003475373.1	-	XM_027352312.1	-	3_U	not_DE	0	123.224	protein krueppel-like, transcript variant X2
+NW_020872851.1	XR_003475373.1	-	XM_027352310.1	-	4_U	not_DE	0	125.917	protein krueppel-like
+NW_020872851.1	XR_003475373.1	-	XM_027352321.1	-	5_U	not_DE	0	128.843	zinc finger protein 572-like
+NW_020872851.1	XR_003475373.1	-	XM_027352320.1	-	1_D	not_DE	0	46.866	E3 ubiquitin-protein ligase SH3RF1-like, transcript variant X2
+NW_020872851.1	XR_003475373.1	-	XM_027352306.1	-	2_D	DE	0	160.761	serine/threonine-protein kinase RIO3-like, transcript variant X2
+NW_020872851.1	XR_003475373.1	-	XM_027352322.1	+	3_D	not_DE	0	175.327	uncharacterized LOC113801906
+NW_020872851.1	XR_003475373.1	-	XM_027352309.1	+	4_D	not_DE	0	228.272	N-acetylglucosamine-6-phosphate deacetylase-like
+NW_020872851.1	XR_003475373.1	-	XM_027352300.1	-	5_D	not_DE	0	234.147	uncharacterized LOC113801890
+NW_020868718.1	XR_003475486.1	-	XM_027353888.1	-	1_U	DE	2	31.477	acetolactate synthase-like protein
+NW_020868718.1	XR_003475486.1	-	XM_027353889.1	-	2_U	DE	3	47.564	acetolactate synthase-like protein
+NW_020868718.1	XR_003475486.1	-	XM_027353904.1	-	3_U	not_DE	0	102.011	cysteine-rich protein 2-binding protein-like
+NW_020868718.1	XR_003475486.1	-	XM_027353902.1	+	4_U	not_DE	0	118.356	crustacean hyperglycemic hormones
+NW_020868718.1	XR_003475486.1	-	XM_027353885.1	+	5_U	DE	0	137.600	uncharacterized LOC113803161, transcript variant X2
+NW_020868718.1	XR_003475486.1	-	XM_027353905.1	+	1_D	DE	3	0.657	uncharacterized LOC113803178
+NW_020868718.1	XR_003475486.1	-	XM_027353906.1	-	2_D	not_DE	0	137.314	serine-rich adhesin for platelets-like
+NW_020868718.1	XR_003475486.1	-	XM_027353907.1	+	3_D	not_DE	0	174.902	extensin-like
+NW_020868718.1	XR_003475486.1	-	XM_027353892.1	-	4_D	DE	2	669.371	fatty acid hydroxylase domain-containing protein 2-like, transcript variant X3
+NW_020868718.1	XR_003475486.1	-	XM_027353893.1	-	5_D	not_DE	0	873.164	octopamine receptor Oamb-like
+NW_020868820.1	XR_003475561.1	-	XM_027354734.1	+	1_U	DE	1	-2.554	putative methyltransferase C9orf114 homolog, transcript variant X4
+NW_020868820.1	XR_003475561.1	-	XM_027354742.1	-	2_U	DE	0	18.754	multiple epidermal growth factor-like domains protein 6
+NW_020868820.1	XR_003475561.1	-	XM_027354728.1	+	3_U	not_DE	0	60.885	vacuolar protein sorting-associated protein 26B-like
+NW_020868820.1	XR_003475561.1	-	XM_027354729.1	-	4_U	not_DE	0	89.369	U1 small nuclear ribonucleoprotein A-like
+NW_020868820.1	XR_003475561.1	-	XM_027354741.1	+	5_U	not_DE	0	98.463	histone acetyltransferase Tip60-like
+NW_020868820.1	XR_003475561.1	-	XM_027354730.1	+	1_D	DE	1	-1.133	putative methyltransferase C9orf114 homolog, transcript variant X1
+NW_020868820.1	XR_003475561.1	-	XM_027354735.1	-	2_D	DE	0	17.503	collagen alpha-1(XVIII) chain-like
+NW_020868820.1	XR_003475561.1	-	XM_027354743.1	-	3_D	DE	0	38.759	serine-rich adhesin for platelets-like
+NW_020868820.1	XR_003475561.1	-	XM_027354738.1	+	4_D	not_DE	0	57.781	uncharacterized LOC113803925, transcript variant X3
+NW_020868820.1	XR_003475561.1	-	XM_027354740.1	-	5_D	DE	0	72.682	uncharacterized LOC113803926, transcript variant X2
+NW_020868947.1	XR_003475657.1	+	XM_027355991.1	+	1_U	not_DE	0	3.753	golgin subfamily A member 3-like
+NW_020868947.1	XR_003475657.1	+	XM_027355993.1	-	1_D	not_DE	0	0.548	leucine-rich repeat and immunoglobulin-like domain-containing nogo receptor-interacting protein 2
+NW_020868947.1	XR_003475657.1	+	XM_027355994.1	-	2_D	not_DE	0	110.794	uncharacterized LOC113805087
+NW_020868947.1	XR_003475657.1	+	XM_027355995.1	+	3_D	not_DE	0	124.300	clumping factor B-like
+NW_020868947.1	XR_003475657.1	+	XM_027355996.1	+	4_D	not_DE	0	156.207	clumping factor B-like
+NW_020868947.1	XR_003475657.1	+	XM_027355992.1	-	5_D	DE	1	160.414	uridine phosphorylase 1-like
+NW_020868952.1	XR_003475661.1	+	XM_027356093.1	+	1_U	DE	3	-0.002	gamma-butyrobetaine dioxygenase-like
+NW_020868952.1	XR_003475661.1	+	XM_027356080.1	-	1_D	DE	3	2.952	gamma-butyrobetaine dioxygenase-like, transcript variant X2
+NW_020868952.1	XR_003475661.1	+	XM_027356076.1	+	2_D	not_DE	0	5.987	pyruvate dehydrogenase phosphatase regulatory subunit, mitochondrial-like, transcript variant X1
+NW_020868952.1	XR_003475661.1	+	XM_027356081.1	-	3_D	DE	1	32.429	glycerate kinase-like
+NW_020868952.1	XR_003475661.1	+	XM_027356082.1	+	4_D	not_DE	0	42.544	mycophenolic acid acyl-glucuronide esterase, mitochondrial-like
+NW_020868952.1	XR_003475661.1	+	XM_027356083.1	-	5_D	DE	2	50.339	mycophenolic acid acyl-glucuronide esterase, mitochondrial-like
+NW_020868959.1	XR_003475662.1	+	XM_027356136.1	-	1_U	not_DE	0	-6.089	uncharacterized LOC113805179, transcript variant X4
+NW_020868959.1	XR_003475662.1	+	XM_027356139.1	+	1_D	DE	3	6.695	brain protein I3-like
+NW_020869014.1	XR_003475695.1	+	XM_027356599.1	-	1_U	not_DE	0	13.607	protein Asterix-like
+NW_020869014.1	XR_003475695.1	+	XM_027356598.1	-	2_U	not_DE	0	19.912	protein cornichon-like
+NW_020869014.1	XR_003475695.1	+	XM_027356597.1	-	3_U	not_DE	0	72.194	cuticle collagen bli-1-like
+NW_020869014.1	XR_003475695.1	+	XM_027356602.1	+	4_U	not_DE	0	117.550	dentin sialophosphoprotein-like
+NW_020869014.1	XR_003475695.1	+	XM_027356600.1	-	1_D	not_DE	0	11.790	NEDD8-activating enzyme E1 regulatory subunit-like
+NW_020869014.1	XR_003475695.1	+	XM_027356604.1	-	2_D	not_DE	0	114.001	probable serine/threonine-protein kinase samkC
+NW_020869014.1	XR_003475695.1	+	XM_027356605.1	-	3_D	not_DE	0	364.847	uncharacterized PE-PGRS family protein PE_PGRS3-like
+NW_020869014.1	XR_003475695.1	+	XM_027356606.1	-	4_D	not_DE	0	386.685	sex-determining region Y protein-like
+NW_020869014.1	XR_003475695.1	+	XM_027356607.1	+	5_D	not_DE	0	387.592	cell wall adhesin EAP1-like
+NW_020869308.1	XR_003476001.1	+	XM_027359952.1	+	1_U	DE	2	1.821	1-acylglycerol-3-phosphate O-acyltransferase Pnpla3-like, transcript variant X1
+NW_020869308.1	XR_003476001.1	+	XM_027359956.1	-	2_U	not_DE	0	28.939	STI1-like protein
+NW_020869308.1	XR_003476001.1	+	XM_027359950.1	-	3_U	not_DE	0	96.680	H2.0-like homeobox protein
+NW_020869308.1	XR_003476001.1	+	XM_027359945.1	+	4_U	not_DE	0	124.942	F-box/WD repeat-containing protein 7-like
+NW_020869308.1	XR_003476001.1	+	XM_027359951.1	-	5_U	not_DE	0	681.261	protein kinase C-binding protein 1-like
+NW_020869308.1	XR_003476001.1	+	XM_027359946.1	-	1_D	DE	3	121.548	uncharacterized LOC113808519
+NW_020869308.1	XR_003476001.1	+	XM_027359957.1	-	2_D	not_DE	0	164.834	cytochrome P450 2L1-like
+NW_020869308.1	XR_003476001.1	+	XM_027359958.1	-	3_D	not_DE	0	338.335	probable ATP-dependent RNA helicase DHX34
+NW_020869308.1	XR_003476001.1	+	XM_027359947.1	-	4_D	not_DE	0	343.921	anaphase-promoting complex subunit 11-like
+NW_020869308.1	XR_003476001.1	+	XM_027359948.1	-	5_D	not_DE	0	367.964	cubilin-like
+NW_020869438.1	XR_003476075.1	-	XM_027361261.1	-	1_U	DE	3	0.592	endoglucanase E-4-like
+NW_020868429.1	XR_003476099.1	+	XM_027361700.1	+	1_U	DE	3	6.527	uncharacterized LOC113810010
+NW_020868429.1	XR_003476099.1	+	XM_027361690.1	+	2_U	DE	3	10.709	uncharacterized LOC113809999
+NW_020868429.1	XR_003476099.1	+	XM_027361679.1	+	3_U	DE	3	15.742	uncharacterized LOC113809992
+NW_020868429.1	XR_003476099.1	+	XM_027361841.1	+	4_U	not_DE	0	23.247	bestrophin-2-like
+NW_020868429.1	XR_003476099.1	+	XM_027361667.1	+	5_U	not_DE	0	39.755	uncharacterized LOC113809982
+NW_020868429.1	XR_003476099.1	+	XM_027361709.1	+	1_D	DE	3	0.099	uncharacterized LOC113810020
+NW_020868429.1	XR_003476099.1	+	XM_027361791.1	+	2_D	DE	3	55.883	uncharacterized LOC113810105
+NW_020868429.1	XR_003476099.1	+	XM_027361755.1	+	3_D	not_DE	0	58.646	uncharacterized LOC113810064
+NW_020868429.1	XR_003476099.1	+	XM_027361743.1	+	4_D	DE	3	61.173	uncharacterized LOC113810055
+NW_020868429.1	XR_003476099.1	+	XM_027361724.1	+	5_D	not_DE	0	64.075	uncharacterized LOC113810037, transcript variant X1
+NW_020869500.1	XR_003476112.1	+	XM_027361885.1	-	1_D	not_DE	0	21.522	uncharacterized LOC113810182
+NW_020869500.1	XR_003476112.1	+	XM_027361878.1	-	2_D	not_DE	0	39.775	carbohydrate sulfotransferase 5-like
+NW_020869500.1	XR_003476112.1	+	XM_027361886.1	+	3_D	DE	0	54.130	carnitine O-palmitoyltransferase 1, liver isoform-like
+NW_020869500.1	XR_003476112.1	+	XM_027361887.1	+	4_D	DE	0	99.875	carnitine O-palmitoyltransferase 1, liver isoform-like, transcript variant X1
+NW_020869500.1	XR_003476112.1	+	XM_027361879.1	+	5_D	not_DE	0	159.728	transmembrane protease serine 9-like
+NW_020869565.1	XR_003476170.1	+	XM_027362499.1	-	1_D	not_DE	0	5.627	aconitate hydratase, mitochondrial-like
+NW_020869565.1	XR_003476170.1	+	XM_027362500.1	+	2_D	DE	0	25.478	T-complex protein 1 subunit theta-like
+NW_020868439.1	XR_003476181.1	-	XM_027362703.1	-	1_U	not_DE	0	98.049	potassium voltage-gated channel protein Shaw-like
+NW_020868439.1	XR_003476181.1	-	XM_027362689.1	+	2_U	not_DE	0	152.428	sideroflexin-1-like, transcript variant X1
+NW_020868439.1	XR_003476181.1	-	XM_027362843.1	-	3_U	not_DE	0	167.826	transmembrane protein 131-like
+NW_020868439.1	XR_003476181.1	-	XM_027362830.1	-	4_U	not_DE	0	289.219	PR domain zinc finger protein 4-like
+NW_020868439.1	XR_003476181.1	-	XM_027362821.1	-	5_U	not_DE	0	305.457	zinc finger protein PLAG1-like
+NW_020868439.1	XR_003476181.1	-	XM_027362713.1	-	1_D	DE	2	3.245	uncharacterized LOC113811033
+NW_020868439.1	XR_003476181.1	-	XM_027362728.1	-	2_D	not_DE	0	9.324	uncharacterized LOC113811049
+NW_020868439.1	XR_003476181.1	-	XM_027362735.1	-	3_D	not_DE	0	13.312	classical arabinogalactan protein 7-like
+NW_020868439.1	XR_003476181.1	-	XM_027362854.1	+	4_D	not_DE	0	15.979	putative protein TPRXL
+NW_020868439.1	XR_003476181.1	-	XM_027362744.1	+	5_D	not_DE	0	24.074	uncharacterized LOC113811071
+NW_020869620.1	XR_003476211.1	-	XM_027362989.1	-	1_D	not_DE	0	4.217	piggyBac transposable element-derived protein 4-like, transcript variant X1
+NW_020869620.1	XR_003476211.1	-	XM_027362991.1	+	2_D	DE	0	36.257	uncharacterized LOC113811280, transcript variant X1
+NW_020869633.1	XR_003476225.1	+	XM_027363099.1	-	1_U	DE	0	6.121	glycosyltransferase 25 family member-like
+NW_020869633.1	XR_003476225.1	+	XM_027363098.1	+	2_U	not_DE	0	21.432	CAAX prenyl protease 2-like
+NW_020869633.1	XR_003476225.1	+	XM_027363097.1	-	3_U	DE	1	46.186	protein dimmed-like
+NW_020869633.1	XR_003476225.1	+	XM_027363096.1	+	4_U	DE	0	49.671	WD repeat-containing protein 62-like
+NW_020869633.1	XR_003476225.1	+	XM_027363081.1	-	5_U	not_DE	0	108.902	proline-rich receptor-like protein kinase PERK10
+NW_020869704.1	XR_003476267.1	+	XM_027363787.1	+	1_U	not_DE	0	9.900	uncharacterized LOC113811934
+NW_020869704.1	XR_003476267.1	+	XM_027363778.1	+	2_U	DE	1	32.399	semaphorin-5B-like
+NW_020869704.1	XR_003476267.1	+	XM_027363777.1	+	3_U	not_DE	0	90.884	vegetative cell wall protein gp1-like
+NW_020869704.1	XR_003476267.1	+	XM_027363788.1	-	1_D	not_DE	0	4.029	ubiquitin carboxyl-terminal hydrolase MINDY-1-like
+NW_020869704.1	XR_003476267.1	+	XM_027363779.1	+	2_D	DE	0	109.694	ubiquitin carboxyl-terminal hydrolase MINDY-2-like
+NW_020869704.1	XR_003476267.1	+	XM_027363789.1	-	3_D	DE	3	131.814	trypsin-1-like
+NW_020869704.1	XR_003476267.1	+	XM_027363780.1	+	4_D	not_DE	0	164.066	basic salivary proline-rich protein 2-like
+NW_020869704.1	XR_003476267.1	+	XM_027363781.1	+	5_D	not_DE	0	165.671	histidine-rich glycoprotein-like
+NW_020869721.1	XR_003476285.1	-	XM_027363943.1	-	1_D	DE	3	0.563	ubiquitin carboxyl-terminal hydrolase 29-like
+NW_020869721.1	XR_003476285.1	-	XM_027363944.1	+	2_D	DE	1	32.613	seipin-like, transcript variant X1
+NW_020869721.1	XR_003476285.1	-	XM_027363946.1	-	3_D	DE	3	58.512	trichohyalin-like
+NW_020869906.1	XR_003476413.1	-	XM_027365799.1	-	1_U	not_DE	0	3.095	uncharacterized LOC113813743
+NW_020869906.1	XR_003476413.1	-	XM_027365806.1	+	2_U	not_DE	0	163.879	histidine-rich glycoprotein-like
+NW_020869906.1	XR_003476413.1	-	XM_027365802.1	+	1_D	not_DE	0	19.202	sulfotransferase family cytosolic 1B member 1-like, transcript variant X2
+NW_020869906.1	XR_003476413.1	-	XM_027365804.1	+	2_D	DE	1	49.412	sulfotransferase family cytosolic 1B member 1-like, transcript variant X2
+NW_020869906.1	XR_003476413.1	-	XM_027365808.1	+	3_D	not_DE	0	49.565	sulfotransferase family cytosolic 1B member 1-like
+NW_020869906.1	XR_003476413.1	-	XM_027365809.1	+	4_D	not_DE	0	70.363	uncharacterized LOC113813750
+NW_020869969.1	XR_003476449.1	-	XM_027366283.1	+	1_U	not_DE	0	67.310	putative nuclease HARBI1
+NW_020869969.1	XR_003476449.1	-	XM_027366284.1	-	1_D	DE	0	3.133	proto-oncogene tyrosine-protein kinase ROS-like
+NW_020869969.1	XR_003476449.1	-	XM_027366285.1	+	2_D	not_DE	0	258.543	exportin-1-like
+NW_020869988.1	XR_003476507.1	+	XM_027366531.1	+	1_U	not_DE	0	23.050	protein misato homolog 1-like
+NW_020869988.1	XR_003476507.1	+	XM_027366530.1	+	2_U	not_DE	0	44.768	putative lysozyme-like protein
+NW_020869988.1	XR_003476507.1	+	XM_027366528.1	+	3_U	not_DE	0	88.330	DNA replication complex GINS protein SLD5-like
+NW_020869988.1	XR_003476507.1	+	XM_027366527.1	-	4_U	DE	2	141.802	peroxiredoxin 1-like
+NW_020869988.1	XR_003476507.1	+	XM_027366526.1	+	5_U	DE	0	153.815	hydroxyacylglutathione hydrolase, mitochondrial-like, transcript variant X5
+NW_020869988.1	XR_003476507.1	+	XM_027366532.1	+	1_D	DE	3	0.336	gamma-butyrobetaine dioxygenase-like
+NW_020869988.1	XR_003476507.1	+	XM_027366533.1	+	2_D	DE	0	52.256	probable nuclear hormone receptor HR3, transcript variant X1
+NW_020869988.1	XR_003476507.1	+	XM_027366537.1	-	3_D	DE	3	150.938	uncharacterized LOC113814501
+NW_020870026.1	XR_003476555.1	-	XM_027366926.1	-	1_U	not_DE	0	93.281	cell wall protein DAN4-like
+NW_020870026.1	XR_003476555.1	-	XM_027366872.1	+	2_U	not_DE	0	143.318	uncharacterized PE-PGRS family protein PE_PGRS46-like, transcript variant X2
+NW_020870026.1	XR_003476555.1	-	XM_027366925.1	+	3_U	not_DE	0	162.845	glycine-rich cell wall structural protein 1.0-like
+NW_020870026.1	XR_003476555.1	-	XM_027366867.1	+	4_U	not_DE	0	179.912	glycine-rich cell wall structural protein-like, transcript variant X1
+NW_020870026.1	XR_003476555.1	-	XM_027366869.1	+	5_U	not_DE	0	183.732	ctenidin-1-like
+NW_020870026.1	XR_003476555.1	-	XM_027366875.1	-	1_D	DE	0	6.839	mitochondrial ornithine transporter 1-like, transcript variant X1
+NW_020870026.1	XR_003476555.1	-	XM_027366879.1	+	2_D	DE	1	38.444	uncharacterized LOC113814820
+NW_020870026.1	XR_003476555.1	-	XM_027366880.1	+	3_D	DE	3	57.974	uncharacterized LOC113814822
+NW_020870026.1	XR_003476555.1	-	XM_027366881.1	+	4_D	not_DE	0	64.723	protein asteroid-like
+NW_020870026.1	XR_003476555.1	-	XM_027366882.1	+	5_D	DE	3	261.830	neural Wiskott-Aldrich syndrome protein-like
+NW_020870096.1	XR_003476604.1	-	XM_027367642.1	+	1_U	not_DE	0	26.395	gastrula zinc finger protein XlCGF9.1-like
+NW_020870096.1	XR_003476604.1	-	XM_027367640.1	-	1_D	not_DE	0	11.214	uncharacterized LOC113815618
+NW_020870096.1	XR_003476604.1	-	XM_027367644.1	-	2_D	DE	0	41.566	vang-like protein 2
+NW_020870096.1	XR_003476604.1	-	XM_027367645.1	+	3_D	not_DE	0	375.724	RNA-binding protein 8A-like, transcript variant X1
+NW_020870096.1	XR_003476604.1	-	XM_027367641.1	-	4_D	DE	0	384.966	basic proline-rich protein-like
+NW_020870096.1	XR_003476604.1	-	XM_027367647.1	-	5_D	not_DE	0	392.842	ATP-dependent RNA helicase abstrakt-like
+NW_020868477.1	XR_003476608.1	-	XM_027367638.1	-	1_U	DE	3	3.814	UDP-glucuronosyltransferase 2C1-like, transcript variant X3
+NW_020868477.1	XR_003476608.1	-	XM_027367623.1	-	2_U	DE	0	31.539	2-hydroxyacylsphingosine 1-beta-galactosyltransferase-like
+NW_020868477.1	XR_003476608.1	-	XM_027367633.1	-	3_U	DE	2	42.474	UDP-glucuronosyltransferase 2B14-like
+NW_020868477.1	XR_003476608.1	-	XM_027367611.1	-	4_U	DE	3	53.946	UDP-glucuronosyltransferase 2B19-like
+NW_020868477.1	XR_003476608.1	-	XM_027367606.1	-	5_U	DE	0	118.873	uncharacterized LOC113815546
+NW_020868477.1	XR_003476608.1	-	XM_027367643.1	-	1_D	DE	3	7.428	UDP-glucuronosyltransferase 2C1-like
+NW_020868477.1	XR_003476608.1	-	XM_027367652.1	-	2_D	DE	3	20.855	UDP-glucuronosyltransferase 2B19-like
+NW_020868477.1	XR_003476608.1	-	XM_027367672.1	+	3_D	not_DE	0	35.133	uncharacterized LOC113815642, transcript variant X1
+NW_020868477.1	XR_003476608.1	-	XM_027367527.1	+	4_D	not_DE	0	100.913	uncharacterized LOC113815459
+NW_020868477.1	XR_003476608.1	-	XM_027367537.1	+	5_D	not_DE	0	124.087	gamma-aminobutyric acid receptor subunit beta-like
+NW_020870182.1	XR_003476707.1	-	XM_027368482.1	+	1_U	not_DE	0	27.789	uncharacterized LOC113816407
+NW_020870182.1	XR_003476707.1	-	XM_027368481.1	+	2_U	not_DE	0	32.934	uncharacterized LOC113816406
+NW_020870182.1	XR_003476707.1	-	XM_027368478.1	-	3_U	not_DE	0	34.416	uncharacterized LOC113816403, transcript variant X4
+NW_020870182.1	XR_003476707.1	-	XM_027368480.1	-	4_U	not_DE	0	62.050	uncharacterized LOC113816405
+NW_020870182.1	XR_003476707.1	-	XM_027368473.1	-	5_U	not_DE	0	66.485	uncharacterized LOC113816402
+NW_020870182.1	XR_003476707.1	-	XM_027368483.1	+	1_D	DE	3	1.960	uncharacterized LOC113816409, transcript variant X1
+NW_020870182.1	XR_003476707.1	-	XM_027368486.1	-	2_D	not_DE	0	19.483	tubulin alpha-1D chain-like
+NW_020870182.1	XR_003476707.1	-	XM_027368461.1	+	3_D	not_DE	0	35.777	uncharacterized LOC113816392
+NW_020870182.1	XR_003476707.1	-	XM_027368487.1	+	4_D	DE	0	61.533	mucin-5AC-like
+NW_020870182.1	XR_003476707.1	-	XM_027368488.1	+	5_D	not_DE	0	96.836	HAUS augmin-like complex subunit 1
+NW_020870189.1	XR_003476714.1	+	XM_027368545.1	-	1_U	not_DE	0	37.195	cuticle protein 16.5-like
+NW_020870189.1	XR_003476714.1	+	XM_027368546.1	-	2_U	not_DE	0	44.297	cuticle protein 16.5-like
+NW_020870189.1	XR_003476714.1	+	XM_027368547.1	+	1_D	DE	3	0.030	uncharacterized LOC113816508
+NW_020870189.1	XR_003476714.1	+	XM_027368548.1	-	2_D	not_DE	0	45.450	tripartite motif-containing protein 3-like
+NW_020870243.1	XR_003476748.1	+	XM_027369060.1	+	1_U	not_DE	0	21.634	myosin-9-like
+NW_020870243.1	XR_003476748.1	+	XM_027369063.1	-	2_U	not_DE	0	127.255	uncharacterized LOC113817063
+NW_020870243.1	XR_003476748.1	+	XM_027369059.1	+	3_U	DE	0	137.313	calmodulin-beta-like
+NW_020870243.1	XR_003476748.1	+	XM_027369061.1	-	4_U	not_DE	0	145.403	cell wall protein DAN4-like
+NW_020870243.1	XR_003476748.1	+	XM_027369065.1	+	1_D	DE	0	6.986	uncharacterized LOC113817065
+NW_020870243.1	XR_003476748.1	+	XM_027369066.1	+	2_D	not_DE	0	21.082	protein germ cell-less-like
+NW_020870243.1	XR_003476749.1	+	XM_027369066.1	+	1_U	not_DE	0	10.000	protein germ cell-less-like
+NW_020870243.1	XR_003476749.1	+	XM_027369065.1	+	2_U	DE	0	33.835	uncharacterized LOC113817065
+NW_020870243.1	XR_003476749.1	+	XM_027369068.1	+	1_D	DE	3	41.439	myosin-VIIa-like
+NW_020870243.1	XR_003476749.1	+	XM_027369067.1	-	2_D	DE	1	90.694	mucolipin-3-like
+NW_020870243.1	XR_003476749.1	+	XM_027369062.1	+	3_D	not_DE	0	123.691	collagen alpha-2(XI) chain-like
+NW_020870243.1	XR_003476749.1	+	XM_027369069.1	+	4_D	DE	0	182.596	histone-lysine N-methyltransferase SETD2-like
+NW_020870322.1	XR_003476805.1	+	XM_027369830.1	-	1_U	not_DE	0	0.884	uncharacterized LOC113817745
+NW_020870322.1	XR_003476805.1	+	XM_027369829.1	+	2_U	not_DE	0	57.343	uncharacterized LOC113817744
+NW_020870322.1	XR_003476805.1	+	XM_027369857.1	+	3_U	not_DE	0	71.930	carbohydrate sulfotransferase 1-like
+NW_020870322.1	XR_003476805.1	+	XM_027369856.1	+	4_U	not_DE	0	81.482	uncharacterized LOC113817760
+NW_020870322.1	XR_003476805.1	+	XM_027369828.1	-	5_U	not_DE	0	105.581	carbohydrate sulfotransferase 1-like
+NW_020870322.1	XR_003476805.1	+	XM_027369847.1	+	1_D	DE	2	5.750	uncharacterized LOC113817755, transcript variant X1
+NW_020870322.1	XR_003476805.1	+	XM_027369853.1	-	2_D	DE	0	374.709	delta-aminolevulinic acid dehydratase-like, transcript variant X4
+NW_020870322.1	XR_003476805.1	+	XM_027369859.1	-	3_D	not_DE	0	388.727	hemicentin-2-like
+NW_020870403.1	XR_003476901.1	-	XM_027370695.1	-	1_U	not_DE	0	151.430	RNA-binding protein 28-like
+NW_020870403.1	XR_003476901.1	-	XM_027370693.1	+	2_U	not_DE	0	280.977	cGMP-dependent protein kinase, isozyme 1-like
+NW_020870403.1	XR_003476901.1	-	XM_027370692.1	-	3_U	DE	1	296.506	uncharacterized LOC113818495
+NW_020870403.1	XR_003476901.1	-	XM_027370694.1	+	4_U	not_DE	0	288.561	cGMP-dependent protein kinase, isozyme 1-like
+NW_020870403.1	XR_003476901.1	-	XM_027370702.1	+	5_U	not_DE	0	316.472	translation initiation factor IF-2-like
+NW_020870403.1	XR_003476901.1	-	XM_027370703.1	-	1_D	not_DE	0	167.278	mucin-2-like
+NW_020870491.1	XR_003476973.1	-	XM_027371398.1	+	1_U	not_DE	0	7.361	frizzled-10-B-like
+NW_020870491.1	XR_003476973.1	-	XM_027371386.1	+	2_U	not_DE	0	154.081	vacuolar protein sorting-associated protein 4B-like
+NW_020870491.1	XR_003476973.1	-	XM_027371385.1	-	3_U	DE	1	176.127	cap-specific mRNA (nucleoside-2'-O-)-methyltransferase 1-like
+NW_020870491.1	XR_003476973.1	-	XM_027371384.1	+	4_U	DE	0	197.432	transmembrane protein 59-like, transcript variant X2
+NW_020870491.1	XR_003476973.1	-	XM_027371382.1	+	5_U	not_DE	0	257.501	neurofilament medium polypeptide-like, transcript variant X2
+NW_020870491.1	XR_003476974.1	-	XM_027371387.1	+	1_D	DE	2	97.312	RNA exonuclease 4-like, transcript variant X5
+NW_020870491.1	XR_003476974.1	-	XM_027371389.1	+	2_D	not_DE	0	113.436	RNA exonuclease 4-like, transcript variant X1
+NW_020870491.1	XR_003476974.1	-	XM_027371392.1	-	3_D	not_DE	0	162.205	uncharacterized LOC113819153
+NW_020870491.1	XR_003476974.1	-	XM_027371408.1	+	4_D	DE	0	188.606	retinal homeobox protein Rx-like
+NW_020870491.1	XR_003476974.1	-	XM_027371409.1	+	5_D	not_DE	0	196.765	leucine-rich repeat extensin-like protein 3
+NW_020870500.1	XR_003476996.1	+	XM_027371505.1	-	1_U	not_DE	0	2.429	actin-like
+NW_020870500.1	XR_003476996.1	+	XM_027371503.1	-	2_U	DE	0	20.601	actin-like
+NW_020870500.1	XR_003476996.1	+	XM_027371502.1	-	3_U	not_DE	0	31.841	actin-like
+NW_020870500.1	XR_003476996.1	+	XM_027371499.1	-	4_U	DE	0	43.185	actin-like
+NW_020870500.1	XR_003476996.1	+	XM_027371500.1	-	5_U	DE	0	37.130	actin-like
+NW_020870500.1	XR_003476996.1	+	XM_027371506.1	+	1_D	DE	3	9.401	aromatic-L-amino-acid decarboxylase-like
+NW_020870500.1	XR_003476996.1	+	XM_027371483.1	+	2_D	not_DE	0	39.432	alpha-(1,3)-fucosyltransferase C-like
+NW_020870500.1	XR_003476996.1	+	XM_027371507.1	-	3_D	not_DE	0	65.286	uncharacterized LOC113819274
+NW_020870500.1	XR_003476996.1	+	XM_027371484.1	+	4_D	not_DE	0	117.027	uncharacterized LOC113819238
+NW_020870500.1	XR_003476996.1	+	XM_027371485.1	+	5_D	not_DE	0	187.479	tripartite motif-containing protein 3-like
+NW_020868536.1	XR_003477129.1	+	XM_027372966.1	+	1_U	DE	2	6.032	uncharacterized LOC113820623
+NW_020868536.1	XR_003477129.1	+	XM_027372959.1	+	2_U	not_DE	0	24.853	chlorophyllase-2, chloroplastic-like
+NW_020868536.1	XR_003477129.1	+	XM_027372947.1	+	3_U	not_DE	0	44.862	exosome complex component RRP46-like
+NW_020868536.1	XR_003477129.1	+	XM_027372929.1	-	4_U	DE	0	60.150	deoxyhypusine hydroxylase-like, transcript variant X2
+NW_020868536.1	XR_003477129.1	+	XM_027372889.1	-	5_U	not_DE	0	66.274	putative nuclease HARBI1
+NW_020870924.1	XR_003477354.1	+	XM_027375392.1	+	1_U	DE	0	17.483	uncharacterized LOC113822860
+NW_020870924.1	XR_003477354.1	+	XM_027375393.1	+	1_D	DE	3	2.901	low affinity immunoglobulin epsilon Fc receptor-like
+NW_020870924.1	XR_003477354.1	+	XM_027375394.1	+	2_D	DE	3	29.969	macrophage mannose receptor 1-like
+NW_020870929.1	XR_003477355.1	-	XM_027375421.1	-	1_U	DE	3	0.548	probable 4-coumarate--CoA ligase 3
+NW_020870929.1	XR_003477355.1	-	XM_027375420.1	+	2_U	not_DE	0	10.702	uncharacterized LOC113822889
+NW_020870929.1	XR_003477355.1	-	XM_027375419.1	+	3_U	not_DE	0	71.874	uncharacterized LOC113822888
+NW_020870929.1	XR_003477355.1	-	XM_027375423.1	+	1_D	not_DE	0	203.905	GTPase HRas-like
+NW_020870929.1	XR_003477355.1	-	XM_027375418.1	-	2_D	not_DE	0	259.836	circadian locomoter output cycles protein kaput-like
+NW_020870929.1	XR_003477355.1	-	XM_027375424.1	+	3_D	not_DE	0	465.471	uncharacterized LOC113822895
+NW_020871102.1	XR_003477514.1	+	XM_027377180.1	+	1_U	DE	1	6.384	beta-galactosidase-1-like protein 2
+NW_020871102.1	XR_003477514.1	+	XM_027377162.1	+	2_U	not_DE	0	117.416	poly(A) polymerase type 3-like, transcript variant X2
+NW_020871102.1	XR_003477514.1	+	XM_027377174.1	+	3_U	not_DE	0	149.814	cuticle protein 19-like
+NW_020871102.1	XR_003477514.1	+	XM_027377182.1	-	4_U	DE	0	169.577	transcription termination factor 2-like
+NW_020871102.1	XR_003477514.1	+	XM_027377181.1	-	5_U	DE	0	191.757	uncharacterized LOC113824439
+NW_020871102.1	XR_003477514.1	+	XM_027377164.1	+	1_D	DE	3	4.535	uncharacterized LOC113824426
+NW_020871102.1	XR_003477514.1	+	XM_027377173.1	+	2_D	DE	3	27.842	uncharacterized LOC113824431
+NW_020871338.1	XR_003477585.1	+	XM_027378182.1	-	1_U	not_DE	0	18.139	uncharacterized protein DDB_G0271670-like
+NW_020871338.1	XR_003477585.1	+	XM_027378181.1	-	2_U	not_DE	0	39.297	extensin-like
+NW_020871395.1	XR_003477597.1	-	XM_027378340.1	+	1_U	not_DE	0	25.933	uncharacterized LOC113825498
+NW_020871395.1	XR_003477597.1	-	XM_027378335.1	+	1_D	DE	3	21.603	obscurin-like, transcript variant X6
+NW_020871395.1	XR_003477597.1	-	XM_027378336.1	-	2_D	DE	2	40.487	obscurin-like
+NW_020871395.1	XR_003477597.1	-	XM_027378341.1	-	3_D	DE	3	54.730	uncharacterized LOC113825499
+NW_020871395.1	XR_003477597.1	-	XM_027378338.1	-	4_D	not_DE	0	65.385	ragulator complex protein LAMTOR2-like
+NW_020871395.1	XR_003477597.1	-	XM_027378337.1	+	5_D	not_DE	0	76.044	putative cyclin-dependent serine/threonine-protein kinase DDB_G0272797/DDB_G0274007
+NW_020868602.1	XR_003477669.1	+	XM_027379514.1	+	1_U	DE	3	7.766	uncharacterized LOC113826621
+NW_020868602.1	XR_003477669.1	+	XM_027379504.1	+	2_U	DE	3	10.930	uncharacterized LOC113826609
+NW_020868602.1	XR_003477669.1	+	XM_027379401.1	+	3_U	DE	1	29.354	uncharacterized LOC113826500
+NW_020868602.1	XR_003477669.1	+	XM_027379493.1	+	4_U	DE	3	40.545	uncharacterized LOC113826598
+NW_020868602.1	XR_003477669.1	+	XM_027379376.1	+	5_U	DE	1	98.968	uncharacterized LOC113826482
+NW_020868602.1	XR_003477669.1	+	XM_027379525.1	-	1_D	DE	3	2.179	uncharacterized LOC113826631
+NW_020871785.1	XR_003477688.1	+	XM_027379600.1	+	1_U	not_DE	0	170.532	uncharacterized LOC113826721
+NW_020871785.1	XR_003477688.1	+	XM_027379594.1	+	2_U	not_DE	0	175.196	uncharacterized LOC113826710
+NW_020871785.1	XR_003477688.1	+	XM_027379601.1	+	3_U	not_DE	0	214.336	vitellogenin-like
+NW_020871785.1	XR_003477688.1	+	XM_027379593.1	-	4_U	not_DE	0	233.185	extensin-like
+NW_020871785.1	XR_003477688.1	+	XM_027379602.1	-	5_U	not_DE	0	351.712	protein odd-skipped-related 1-like
+NW_020871785.1	XR_003477689.1	-	XM_027379595.1	-	1_D	not_DE	0	35.539	BDNF/NT-3 growth factors receptor-like
+NW_020871785.1	XR_003477689.1	-	XM_027379596.1	+	2_D	not_DE	0	63.338	filaggrin-2-like
+NW_020871785.1	XR_003477689.1	-	XM_027379597.1	+	3_D	not_DE	0	90.177	vitellogenin-like
+NW_020871785.1	XR_003477689.1	-	XM_027379599.1	+	4_D	not_DE	0	161.750	vitellogenin-like
+NW_020872031.1	XR_003477732.1	+	XM_027380232.1	+	1_U	not_DE	0	17.901	myophilin-like, transcript variant X1
+NW_020872031.1	XR_003477732.1	+	XM_027380231.1	+	2_U	not_DE	0	82.455	extensin-like
+NW_020872045.1	XR_003477734.1	+	XM_027380253.1	+	1_U	DE	3	37.943	basic salivary proline-rich protein 2-like
+NW_020872045.1	XR_003477734.1	+	XM_027380252.1	-	2_U	not_DE	0	42.069	cytochrome c oxidase subunit NDUFA4-like
+NW_020872045.1	XR_003477734.1	+	XM_027380251.1	+	3_U	DE	3	53.367	protein maelstrom homolog
+NW_020872045.1	XR_003477734.1	+	XM_027380250.1	-	4_U	not_DE	0	65.407	uncharacterized LOC113827370
+NW_020872045.1	XR_003477734.1	+	XM_027380245.1	+	5_U	DE	0	80.404	uncharacterized LOC113827364
+NW_020872045.1	XR_003477734.1	+	XM_027380247.1	-	1_D	not_DE	0	2.106	facilitated trehalose transporter Tret1-like
+NW_020872284.1	XR_003477788.1	+	XM_027381074.1	+	1_U	DE	3	0.197	uncharacterized LOC113828137, transcript variant X2
+NW_020872284.1	XR_003477788.1	+	XM_027381068.1	+	2_U	not_DE	0	121.352	putative nuclease HARBI1
+NW_020872284.1	XR_003477788.1	+	XM_027381067.1	-	3_U	not_DE	0	218.012	homer protein homolog 2-like
+NW_020872284.1	XR_003477788.1	+	XM_027381065.1	+	4_U	not_DE	0	673.846	serine-rich adhesin for platelets-like
+NW_020872284.1	XR_003477788.1	+	XM_027381077.1	+	5_U	not_DE	0	721.084	mucin-19-like, transcript variant X2
+NW_020872284.1	XR_003477788.1	+	XM_027381069.1	-	1_D	not_DE	0	7.184	uncharacterized LOC113828131
+NW_020872284.1	XR_003477788.1	+	XM_027381070.1	+	2_D	not_DE	0	11.463	uncharacterized LOC113828132
+NW_020872284.1	XR_003477788.1	+	XM_027381072.1	-	3_D	not_DE	0	17.806	uncharacterized LOC113828136
+NW_020872284.1	XR_003477788.1	+	XM_027381062.1	+	4_D	not_DE	0	27.361	probable leucine--tRNA ligase, mitochondrial
+NW_020872284.1	XR_003477788.1	+	XM_027381063.1	-	5_D	not_DE	0	53.052	inhibitor of Bruton tyrosine kinase-like
+NW_020872437.1	XR_003477847.1	+	XM_027381903.1	+	1_U	DE	3	0.023	golgin subfamily A member 6-like protein 1
+NW_020872437.1	XR_003477847.1	+	XM_027381843.1	+	2_U	not_DE	0	12.549	PAX3- and PAX7-binding protein 1-like
+NW_020872437.1	XR_003477847.1	+	XM_027381842.1	+	3_U	DE	1	13.431	ankyrin repeat domain-containing protein 6-like
+NW_020872437.1	XR_003477847.1	+	XM_027381841.1	+	4_U	DE	3	35.824	vicilin-like seed storage protein At2g18540
+NW_020872437.1	XR_003477847.1	+	XM_027381904.1	+	5_U	DE	3	39.252	serine/threonine-protein phosphatase 6 regulatory ankyrin repeat subunit B-like
+NW_020872437.1	XR_003477847.1	+	XM_027381845.1	+	1_D	DE	2	20.969	golgin subfamily A member 6-like protein 2
+NW_020872437.1	XR_003477847.1	+	XM_027381867.1	+	2_D	not_DE	0	38.351	oxysterol-binding protein-related protein 9-like
+NW_020872437.1	XR_003477847.1	+	XM_027381846.1	-	3_D	not_DE	0	63.267	extensin-like
+NW_020872437.1	XR_003477847.1	+	XM_027381893.1	+	4_D	DE	0	78.475	uncharacterized LOC113828836, transcript variant X1
+NW_020872437.1	XR_003477847.1	+	XM_027381878.1	+	5_D	DE	0	88.351	octapeptide-repeat protein T2-like, transcript variant X8
+NW_020872476.1	XR_003477869.1	+	XM_027382167.1	+	1_D	DE	2	15.501	galactosylceramide sulfotransferase-like, transcript variant X1
+NW_020872476.1	XR_003477869.1	+	XM_027382172.1	+	2_D	DE	3	38.391	galactosylceramide sulfotransferase-like
+NW_020872476.1	XR_003477869.1	+	XM_027382173.1	+	3_D	not_DE	0	48.674	galactosylceramide sulfotransferase-like
+NW_020872476.1	XR_003477869.1	+	XM_027382165.1	+	4_D	DE	0	282.509	myoneurin-like, transcript variant X1
+NW_020872596.1	XR_003477935.1	+	XM_027383173.1	+	1_U	DE	1	9.787	phospholipid phosphatase 2-like
+NW_020872596.1	XR_003477935.1	+	XM_027383174.1	-	1_D	not_DE	0	7.858	ESX-1 secretion-associated protein EspI-like
+NW_020872596.1	XR_003477935.1	+	XM_027383175.1	+	2_D	DE	0	29.402	uncharacterized LOC113830005
+NW_020872596.1	XR_003477935.1	+	XM_027383177.1	-	3_D	DE	1	41.143	uncharacterized LOC113830010
+NW_020872596.1	XR_003477935.1	+	XM_027383185.1	-	4_D	not_DE	0	88.344	protein kinase C iota type-like, transcript variant X1
+NW_020872596.1	XR_003477935.1	+	XM_027383180.1	+	5_D	DE	1	184.574	F-actin-capping protein subunit beta, transcript variant X2
+NW_020872656.1	XR_003477976.1	-	XM_027383786.1	-	1_U	DE	3	11.306	uncharacterized LOC113830582
+NW_020872656.1	XR_003477976.1	-	XM_027383784.1	-	2_U	DE	3	-1.152	uncharacterized LOC113830581
+NW_020872656.1	XR_003477976.1	-	XM_027383783.1	-	3_U	not_DE	0	23.512	uncharacterized LOC113830580

@@ -1,0 +1,13 @@
+section	metric	value
+global	geometric_mean_bp	8045.8939572103
+global	geometric_mean_kb	8.0458939572103
+global	cis_score_target	3
+global	selected_tolerance	0.1
+global	score3_row_count	84
+global	score3_unique_lnc_count	46
+global	rows_within_selected_tolerance	4
+global	lncs_within_selected_tolerance	3
+tolerance_band	within_0.05	rows=1;unique_lnc=1;lower_kb=7.6436;upper_kb=8.4482
+tolerance_band	within_0.1	rows=4;unique_lnc=3;lower_kb=7.2413;upper_kb=8.8505
+tolerance_band	within_0.25	rows=10;unique_lnc=9;lower_kb=6.0344;upper_kb=10.0574
+tolerance_band	within_0.5	rows=21;unique_lnc=16;lower_kb=4.0229;upper_kb=12.0688

@@ -1,12 +1,20 @@
 from __future__ import annotations
 
+import gzip
 from pathlib import Path
+from typing import IO
 from typing import Iterator
+
+
+def open_text(path: Path) -> IO[str]:
+    if path.suffix == ".gz":
+        return gzip.open(path, "rt", encoding="utf-8", errors="replace")
+    return path.open("r", encoding="utf-8", errors="replace")
 
 
 def read_ids_one_per_line(path: Path) -> set[str]:
     ids: set[str] = set()
-    with path.open("r", encoding="utf-8", errors="replace") as f:
+    with open_text(path) as f:
         for line in f:
             s = line.strip()
             if not s:
@@ -18,7 +26,7 @@ def read_ids_one_per_line(path: Path) -> set[str]:
 
 
 def iter_tsv_rows(path: Path) -> Iterator[list[str]]:
-    with path.open("r", encoding="utf-8", errors="replace") as f:
+    with open_text(path) as f:
         for line in f:
             line = line.rstrip("\n")
             if not line:
