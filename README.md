@@ -181,9 +181,39 @@ libncker annotate \
   --ncbi-api-key YOUR_KEY
 ```
 
+By default only first neighbors (`1_U` and `1_D`) are annotated, matching the intergenic
+distance analysis. To include farther positions:
+```bash
+libncker annotate \
+  --cis-dir results/ \
+  --outdir results/annotations/ \
+  --positions 1_U,1_D,2_U,2_D
+```
+
+#### eggNOG-mapper GO annotation (recommended for non-model organisms)
+
+For organisms whose genes are not curated in NCBI (e.g. predicted *L. vannamei* RefSeq),
+GO terms from NCBI Gene XML will be empty. Use `--emapper` to submit protein sequences to
+the [eggNOG-mapper](http://eggnog-mapper.embl.de) web server and retrieve proper GO terms:
+
+```bash
+libncker annotate \
+  --cis-dir results/ \
+  --outdir results/annotations/ \
+  --gff /path/to/genome.gff \
+  --emapper
+```
+
+- `--gff` is optional but recommended: libncker reads the assembly accession from the GFF
+  header, queries NCBI Taxonomy, and automatically selects the closest available eggNOG
+  taxonomic scope (e.g. *Arthropoda* for shrimp).
+- Without `--gff`, the scope defaults to *Arthropoda*.
+- eggNOG-mapper GO terms overwrite the NCBI Gene XML GO columns when available.
+- GO term names are resolved via the QuickGO API; raw GO IDs are used as fallback.
+
 Output files: `<tissue>_de_mrna_annotations.tsv` — one file per tissue found, one row
 per unique mRNA, with columns: `mRNA_ID`, `product`, `lncRNA_IDs`, `mRNA_positions`,
-`ncbi_summary`.
+`ncbi_summary`, `go_biological_process`, `go_molecular_function`, `go_cellular_component`.
 
 Works with any number of tissues; no configuration needed.
 

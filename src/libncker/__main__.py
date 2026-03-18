@@ -53,12 +53,28 @@ def build_parser() -> argparse.ArgumentParser:
     # annotate
     an = sub.add_parser(
         "annotate",
-        help="Annotate DE mRNAs from cis module outputs with NCBI gene summaries and Claude tissue-relevance annotations.",
+        help="Annotate DE mRNAs from cis module outputs with NCBI gene summaries and GO terms.",
     )
     an.add_argument("--cis-dir", required=True, help="Directory containing *_cis_regulation_module_output.txt files.")
     an.add_argument("--outdir", required=True, help="Output directory for per-tissue annotation TSV files.")
+    an.add_argument("--positions", default="1_U,1_D", help="Comma-separated mRNA positions to include (default: 1_U,1_D).")
     an.add_argument("--ncbi-api-key", default="", help="NCBI API key (optional; raises rate limit from 3 to 10 req/s).")
     an.add_argument("--delay", type=float, default=0.4, help="Seconds between NCBI requests (default: 0.4).")
+    an.add_argument(
+        "--emapper",
+        action="store_true",
+        default=False,
+        help=(
+            "Run eggNOG-mapper for GO annotation (recommended for non-model organisms). "
+            "Requires internet access to eggnog-mapper.embl.de. "
+            "Auto-detects the organism's taxon from --gff if provided."
+        ),
+    )
+    an.add_argument(
+        "--gff",
+        default=None,
+        help="Genome annotation GFF (used with --emapper to auto-detect the organism's taxonomic scope).",
+    )
 
     # run = full pipeline
     runp = sub.add_parser("run", help="Run full pipeline: (IDs) -> exclusive -> cis module.")
@@ -93,6 +109,9 @@ def main() -> None:
             outdir=Path(args.outdir),
             ncbi_api_key=args.ncbi_api_key,
             delay=args.delay,
+            positions=set(args.positions.split(",")),
+            use_emapper=args.emapper,
+            gff=Path(args.gff) if args.gff else None,
         )
         return
 
