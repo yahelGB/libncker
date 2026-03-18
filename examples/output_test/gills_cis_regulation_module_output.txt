@@ -28,9 +28,9 @@ NW_020869259.1	XR_003475978.1	-	XM_027359377.1	-	2_U	DE	3	30.333	alpha-2-macrogl
 NW_020869259.1	XR_003475978.1	-	XM_027359376.1	+	3_U	not_DE	0	40.590	alpha-2-macroglobulin-like protein 1
 NW_020869259.1	XR_003475978.1	-	XM_027359379.1	-	4_U	not_DE	0	57.515	vegetative cell wall protein gp1-like
 NW_020869259.1	XR_003475978.1	-	XM_027359375.1	-	5_U	DE	2	204.512	inactive hydroxysteroid dehydrogenase-like protein 1, transcript variant X2
-NW_020869259.1	XR_003475978.1	-	XM_027359382.1	-	1_D	DE	3	10.650	alpha-2-macroglobulin-like protein 1
-NW_020869259.1	XR_003475978.1	-	XM_027359383.1	-	2_D	not_DE	0	23.836	uncharacterized LOC113808063
-NW_020869259.1	XR_003475978.1	-	XM_027359378.1	-	3_D	not_DE	0	32.073	kielin/chordin-like protein
+NW_020869259.1	XR_003475979.1	-	XM_027359382.1	-	1_D	DE	3	10.650	alpha-2-macroglobulin-like protein 1
+NW_020869259.1	XR_003475979.1	-	XM_027359383.1	-	2_D	not_DE	0	23.836	uncharacterized LOC113808063
+NW_020869259.1	XR_003475979.1	-	XM_027359378.1	-	3_D	not_DE	0	32.073	kielin/chordin-like protein
 NW_020869305.1	XR_003475998.1	-	XM_027359910.1	+	1_U	not_DE	0	21.818	translation initiation factor IF-2-like
 NW_020869305.1	XR_003475998.1	-	XM_027359909.1	+	2_U	not_DE	0	29.332	uncharacterized LOC113808492
 NW_020869305.1	XR_003475998.1	-	XM_027359900.1	-	3_U	DE	0	81.398	cotranscriptional regulator FAM172A homolog
@@ -156,13 +156,13 @@ NW_020871011.1	XR_003477432.1	+	XM_027376423.1	-	2_D	not_DE	0	123.103	uncharacte
 NW_020871011.1	XR_003477432.1	+	XM_027376395.1	-	3_D	not_DE	0	156.709	tigger transposable element-derived protein 4-like, transcript variant X5
 NW_020871011.1	XR_003477432.1	+	XM_027376415.1	-	4_D	not_DE	0	196.129	epsin-2-like
 NW_020871011.1	XR_003477432.1	+	XM_027376421.1	-	5_D	not_DE	0	213.347	zinc finger protein ZIC 5-like
+NW_020871049.1	XR_003477454.1	+	XM_027376687.1	-	1_D	DE	2	0.330	uncharacterized LOC113823954
+NW_020871049.1	XR_003477454.1	+	XM_027376695.1	-	2_D	DE	3	10.971	venom carboxylesterase-6-like
+NW_020871049.1	XR_003477454.1	+	XM_027376698.1	+	3_D	DE	0	90.933	transient receptor potential channel pyrexia-like, transcript variant X2
+NW_020871049.1	XR_003477454.1	+	XM_027376701.1	-	4_D	not_DE	0	123.306	recQ-mediated genome instability protein 1-like
+NW_020871049.1	XR_003477454.1	+	XM_027376693.1	+	5_D	not_DE	0	150.681	dual specificity protein phosphatase 3-like, transcript variant X4
 NW_020871049.1	XR_003477455.1	+	XM_027376686.1	+	1_U	not_DE	0	11.124	uncharacterized LOC113823953
 NW_020871049.1	XR_003477455.1	+	XM_027376696.1	+	2_U	not_DE	0	21.527	E3 ubiquitin-protein ligase HUWE1-like
-NW_020871049.1	XR_003477455.1	+	XM_027376687.1	-	1_D	DE	2	0.330	uncharacterized LOC113823954
-NW_020871049.1	XR_003477455.1	+	XM_027376695.1	-	2_D	DE	3	10.971	venom carboxylesterase-6-like
-NW_020871049.1	XR_003477455.1	+	XM_027376698.1	+	3_D	DE	0	90.933	transient receptor potential channel pyrexia-like, transcript variant X2
-NW_020871049.1	XR_003477455.1	+	XM_027376701.1	-	4_D	not_DE	0	123.306	recQ-mediated genome instability protein 1-like
-NW_020871049.1	XR_003477455.1	+	XM_027376693.1	+	5_D	not_DE	0	150.681	dual specificity protein phosphatase 3-like, transcript variant X4
 NW_020868581.1	XR_003477528.1	-	XM_027377636.1	+	1_U	not_DE	0	10.486	myrosinase-binding protein 2-like
 NW_020868581.1	XR_003477528.1	-	XM_027377341.1	+	2_U	DE	2	19.736	glycoprotein-N-acetylgalactosamine 3-beta-galactosyltransferase 1-like
 NW_020868581.1	XR_003477528.1	-	XM_027377227.1	-	3_U	DE	0	98.629	uncharacterized LOC113824434, transcript variant X8

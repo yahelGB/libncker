@@ -1,9 +1,9 @@
 key	value
 exclusive_level	transcript
-lncrna_ids_count	1791
+lncrna_ids_count	2028
 files_processed	6
-kept_rows_lncrna	670
-skipped_not_lnc_rows	24553
+kept_rows_lncrna	739
+skipped_not_lnc_rows	24484
 invalid_expression_rows	0
 tissues_inferred	4
 tissues_list	gills,hemocytes,hep,muscle
@@ -12,8 +12,8 @@ observed_pairwise_comparisons	6
 required_patterns_strict	3
 mode	strict
 required_patterns_used	3
-ids_mixed_up_direction	42
-exclusive_count_gills	33
-exclusive_count_hemocytes	23
-exclusive_count_hep	51
-exclusive_count_muscle	10
+ids_mixed_up_direction	45
+exclusive_count_gills	36
+exclusive_count_hemocytes	26
+exclusive_count_hep	52
+exclusive_count_muscle	12

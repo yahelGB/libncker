@@ -130,11 +130,15 @@ NW_020869906.1	XR_003476413.1	-	XM_027365809.1	+	4_D	not_DE	0	70.363	uncharacter
 NW_020869969.1	XR_003476449.1	-	XM_027366283.1	+	1_U	not_DE	0	67.310	putative nuclease HARBI1
 NW_020869969.1	XR_003476449.1	-	XM_027366284.1	-	1_D	DE	0	3.133	proto-oncogene tyrosine-protein kinase ROS-like
 NW_020869969.1	XR_003476449.1	-	XM_027366285.1	+	2_D	not_DE	0	258.543	exportin-1-like
+NW_020869988.1	XR_003476500.1	-	XM_027366528.1	+	1_U	not_DE	0	-0.292	DNA replication complex GINS protein SLD5-like
+NW_020869988.1	XR_003476500.1	-	XM_027366527.1	-	2_U	DE	2	53.181	peroxiredoxin 1-like
+NW_020869988.1	XR_003476500.1	-	XM_027366526.1	+	3_U	DE	0	65.194	hydroxyacylglutathione hydrolase, mitochondrial-like, transcript variant X5
+NW_020869988.1	XR_003476500.1	-	XM_027366521.1	-	4_U	DE	1	77.699	uncharacterized LOC113814489
+NW_020869988.1	XR_003476500.1	-	XM_027366520.1	+	5_U	not_DE	0	86.024	polyglutamine-binding protein 1-like, transcript variant X2
+NW_020869988.1	XR_003476500.1	-	XM_027366530.1	+	1_D	not_DE	0	26.321	putative lysozyme-like protein
+NW_020869988.1	XR_003476500.1	-	XM_027366531.1	+	2_D	not_DE	0	36.613	protein misato homolog 1-like
 NW_020869988.1	XR_003476507.1	+	XM_027366531.1	+	1_U	not_DE	0	23.050	protein misato homolog 1-like
 NW_020869988.1	XR_003476507.1	+	XM_027366530.1	+	2_U	not_DE	0	44.768	putative lysozyme-like protein
-NW_020869988.1	XR_003476507.1	+	XM_027366528.1	+	3_U	not_DE	0	88.330	DNA replication complex GINS protein SLD5-like
-NW_020869988.1	XR_003476507.1	+	XM_027366527.1	-	4_U	DE	2	141.802	peroxiredoxin 1-like
-NW_020869988.1	XR_003476507.1	+	XM_027366526.1	+	5_U	DE	0	153.815	hydroxyacylglutathione hydrolase, mitochondrial-like, transcript variant X5
 NW_020869988.1	XR_003476507.1	+	XM_027366532.1	+	1_D	DE	3	0.336	gamma-butyrobetaine dioxygenase-like
 NW_020869988.1	XR_003476507.1	+	XM_027366533.1	+	2_D	DE	0	52.256	probable nuclear hormone receptor HR3, transcript variant X1
 NW_020869988.1	XR_003476507.1	+	XM_027366537.1	-	3_D	DE	3	150.938	uncharacterized LOC113814501

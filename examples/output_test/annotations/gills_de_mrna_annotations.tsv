@@ -1,0 +1,21 @@
+mRNA_ID	product	lncRNA_IDs	mRNA_positions	ncbi_summary	go_biological_process	go_molecular_function	go_cellular_component
+XM_027353361.1	uncharacterized LOC113802748	XR_003475449.1	1_D				
+XM_027353672.1	protein trapped in endoderm-1-like	XR_003475469.1	1_D				
+XM_027354452.1	alpha/beta-gliadin A-III-like, transcript variant X2	XR_003475534.1	1_D	DISCONTINUED: This record has been withdrawn by NCBI because the model on which it was based was not predicted in a later annotation.			
+XM_027355552.1	MAM domain-containing glycosylphosphatidylinositol anchor protein 1-like	XR_003475612.1	1_U				
+XM_027359380.1	alpha-2-macroglobulin-like protein 1	XR_003475978.1	1_U				
+XM_027359382.1	alpha-2-macroglobulin-like protein 1	XR_003475979.1	1_D				
+XM_027359912.1	puff-specific protein Bx42-like	XR_003475998.1	1_D				
+XM_027369302.1	fucose-1-phosphate guanylyltransferase-like	XR_003476764.1	1_U				
+XM_027370469.1	protein tincar-like	XR_003476840.1	1_D				
+XM_027370497.1	proto-oncogene tyrosine-protein kinase receptor Ret-like	XR_003476840.1	1_U	DISCONTINUED: This record has been withdrawn by NCBI staff. This record represented a gene that is not currently annotated by NCBI.			
+XM_027370512.1	neuropeptide-like protein 30, transcript variant X1	XR_003476843.1	1_D				
+XM_027371453.1	proteasome subunit beta type-4-like	XR_003476985.1	1_D				
+XM_027373233.1	ATP-binding cassette sub-family D member 3-like	XR_003477145.1	1_U				
+XM_027374401.1	alpha/beta-gliadin A-III-like, transcript variant X3	XR_003477224.1	1_D				
+XM_027374466.1	monocarboxylate transporter 8-like	XR_003477224.1	1_U	DISCONTINUED: This record has been withdrawn by NCBI because the model on which it was based was not predicted in a later annotation.			
+XM_027376033.1	uncharacterized LOC113823405	XR_003477389.1	1_D				
+XM_027376303.1	uncharacterized LOC113823614	XR_003477403.1	1_U				
+XM_027376400.1	angiotensin-converting enzyme-like	XR_003477432.1	1_D				
+XM_027376687.1	uncharacterized LOC113823954	XR_003477454.1	1_D				
+XM_027377415.1	mucin-5AC-like	XR_003477531.1	1_D				

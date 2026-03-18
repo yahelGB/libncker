@@ -1,5 +1,5 @@
 metric	value
-input_gff	examples/data_test/GCF_003789085.1_ASM378908v1_genomic.gff.gz
+input_gff	examples/data_test/GCF_003789085.1_ASM378908v1_genomic.gff
 n_intergenic_distances	24563
 mean_bp	30949.274926
 median_bp	8723.000000
