@@ -397,6 +397,21 @@ def lookup_go_terms(
     return name_aspect
 
 
+# Mapping from numeric eggNOG scope ID → name accepted by emapper.py --tax_scope
+_SCOPE_ID_TO_NAME: dict[int, str] = {
+    1: "root",
+    2: "Bacteria",
+    2157: "Archaea",
+    2759: "Eukaryota",
+    33208: "Metazoa",
+    6656: "Arthropoda",
+    50557: "Insecta",
+    7742: "Vertebrata",
+    33090: "Viridiplantae",
+    4751: "Fungi",
+}
+
+
 # ---------------------------------------------------------------------------
 # Local eggNOG-mapper runner
 # ---------------------------------------------------------------------------
@@ -406,16 +421,21 @@ def _run_emapper_local(
     tax_scope: int,
     emapper_db: Path,
     cpu: int = 4,
+    outdir: Path | None = None,
 ) -> dict[str, list[str]]:
     """Run emapper.py locally and return {mrna_id: [GO_id, …]}.
 
     Writes a temp FASTA, runs ``emapper.py``, parses the ``.annotations`` file.
     Requires ``emapper.py`` to be on PATH (e.g. conda activate eggnog-mapper).
+    The annotations file is also copied to *outdir* for inspection.
     """
     emapper_cmd = shutil.which("emapper.py")
     if not emapper_cmd:
         print("  [emapper] emapper.py not found on PATH; skipping local run.")
         return {}
+
+    # emapper.py --tax_scope expects a name, not a numeric ID
+    scope_name = _SCOPE_ID_TO_NAME.get(tax_scope, "auto")
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp = Path(tmpdir)
@@ -429,16 +449,15 @@ def _run_emapper_local(
             "-o", "emapper_out",
             "--output_dir", str(tmp),
             "--data_dir", str(emapper_db),
-            "--tax_scope", str(tax_scope),
+            "--tax_scope", scope_name,
             "--cpu", str(cpu),
-            "--no_annot", "False",
             "--override",
         ]
-        print(f"  [emapper] Running locally: {' '.join(cmd[:6])} …")
+        print(f"  [emapper] Running locally (tax_scope={scope_name}, cpu={cpu})…")
         try:
-            subprocess.run(cmd, check=True, capture_output=True)
+            subprocess.run(cmd, check=True)
         except subprocess.CalledProcessError as exc:
-            print(f"  [emapper] Local run failed:\n{exc.stderr.decode()}")
+            print(f"  [emapper] Local run failed (exit {exc.returncode}).")
             return {}
 
         ann_file = tmp / "emapper_out.emapper.annotations"
@@ -446,7 +465,15 @@ def _run_emapper_local(
             print("  [emapper] Annotations file not found after local run.")
             return {}
 
-        return _parse_annotations_tsv(ann_file.read_text())
+        tsv = ann_file.read_text()
+
+        # Copy annotations to outdir for inspection
+        if outdir is not None:
+            dest = outdir / "emapper_out.emapper.annotations"
+            dest.write_text(tsv)
+            print(f"  [emapper] Annotations saved to {dest}")
+
+        return _parse_annotations_tsv(tsv)
 
 
 def _parse_annotations_tsv(tsv: str) -> dict[str, list[str]]:
@@ -480,6 +507,7 @@ def run_emapper_annotation(
     emapper_db: Path | None = None,
     tax_scope_override: int | None = None,
     cpu: int = 4,
+    outdir: Path | None = None,
 ) -> dict[str, dict[str, list[str]]]:
     """Full eggNOG-mapper annotation pipeline for a list of mRNA accessions.
 
@@ -519,7 +547,7 @@ def run_emapper_annotation(
 
     # 3a) Local mode
     if emapper_db is not None:
-        go_id_map = _run_emapper_local(fasta_str, tax_scope, emapper_db, cpu=cpu)
+        go_id_map = _run_emapper_local(fasta_str, tax_scope, emapper_db, cpu=cpu, outdir=outdir)
         if not go_id_map:
             return empty
     else:
