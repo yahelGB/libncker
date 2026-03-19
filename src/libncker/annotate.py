@@ -218,6 +218,7 @@ def run_annotate(
                 tax_scope_override=tax_scope,
                 cpu=emapper_cpu,
                 outdir=outdir,
+                tissue=tissue,
             )
 
         with out.open("w", encoding="utf-8", newline="") as fh:

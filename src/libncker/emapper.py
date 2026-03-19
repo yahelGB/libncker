@@ -422,6 +422,7 @@ def _run_emapper_local(
     emapper_db: Path,
     cpu: int = 4,
     outdir: Path | None = None,
+    tissue: str = "out",
 ) -> dict[str, list[str]]:
     """Run emapper.py locally and return {mrna_id: [GO_id, …]}.
 
@@ -467,9 +468,9 @@ def _run_emapper_local(
 
         tsv = ann_file.read_text()
 
-        # Copy annotations to outdir for inspection
+        # Copy annotations to outdir named per tissue
         if outdir is not None:
-            dest = outdir / "emapper_out.emapper.annotations"
+            dest = outdir / f"{tissue}_emapper.annotations"
             dest.write_text(tsv)
             print(f"  [emapper] Annotations saved to {dest}")
 
@@ -508,6 +509,7 @@ def run_emapper_annotation(
     tax_scope_override: int | None = None,
     cpu: int = 4,
     outdir: Path | None = None,
+    tissue: str = "out",
 ) -> dict[str, dict[str, list[str]]]:
     """Full eggNOG-mapper annotation pipeline for a list of mRNA accessions.
 
@@ -547,7 +549,7 @@ def run_emapper_annotation(
 
     # 3a) Local mode
     if emapper_db is not None:
-        go_id_map = _run_emapper_local(fasta_str, tax_scope, emapper_db, cpu=cpu, outdir=outdir)
+        go_id_map = _run_emapper_local(fasta_str, tax_scope, emapper_db, cpu=cpu, outdir=outdir, tissue=tissue)
         if not go_id_map:
             return empty
     else:
