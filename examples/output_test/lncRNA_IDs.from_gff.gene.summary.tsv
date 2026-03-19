@@ -1,0 +1,8 @@
+key	value
+gff	/Users/yahelgb/Desktop/projects/libncker/examples/data_test/GCF_003789085.1_ASM378908v1_genomic.gff
+level	gene
+genes_lncRNA	1791
+genes_lncRNA_by_biotype	1791
+genes_lncRNA_by_parent	1791
+transcripts_lncRNA	2028
+transcripts_prefix_XR	2028

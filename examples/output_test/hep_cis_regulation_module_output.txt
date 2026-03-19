@@ -1,4 +1,11 @@
 Contig	lncRNA_ID	lncRNA_strand	mRNA_ID	mRNA_strand	mRNA_position	DE_status	cis_score	distance_Kb	product
+NW_020872677.1	XR_003474919.1	-	XM_027350687.1	+	1_U	not_DE	0	1.993	RCC1 domain-containing protein DDB_G0279253-like
+NW_020872677.1	XR_003474919.1	-	XM_027350680.1	+	2_U	not_DE	0	3.091	ultraviolet-B receptor UVR8-like, transcript variant X2
+NW_020872677.1	XR_003474921.1	-	XM_027350689.1	+	1_D	DE	0	-8.873	LIM and senescent cell antigen-like-containing domain protein 1, transcript variant X2
+NW_020872677.1	XR_003474921.1	-	XM_027350673.1	+	2_D	not_DE	0	50.777	uncharacterized LOC113799964
+NW_020872677.1	XR_003474921.1	-	XM_027350674.1	-	3_D	DE	1	111.574	anion exchange protein 2-like
+NW_020872677.1	XR_003474921.1	-	XM_027350677.1	+	4_D	DE	0	138.922	paxillin-like
+NW_020872677.1	XR_003474921.1	-	XM_027350678.1	-	5_D	DE	0	164.257	uncharacterized LOC113799970
 NW_020872759.1	XR_003474979.1	-	XM_027351485.1	+	1_U	DE	3	10.105	inversin-A-like
 NW_020872759.1	XR_003474979.1	-	XM_027351493.1	+	2_U	not_DE	0	133.427	uncharacterized LOC113800691
 NW_020872759.1	XR_003474979.1	-	XM_027351488.1	-	1_D	DE	3	2.493	ankyrin-1-like
@@ -130,13 +137,13 @@ NW_020869906.1	XR_003476413.1	-	XM_027365809.1	+	4_D	not_DE	0	70.363	uncharacter
 NW_020869969.1	XR_003476449.1	-	XM_027366283.1	+	1_U	not_DE	0	67.310	putative nuclease HARBI1
 NW_020869969.1	XR_003476449.1	-	XM_027366284.1	-	1_D	DE	0	3.133	proto-oncogene tyrosine-protein kinase ROS-like
 NW_020869969.1	XR_003476449.1	-	XM_027366285.1	+	2_D	not_DE	0	258.543	exportin-1-like
-NW_020869988.1	XR_003476500.1	-	XM_027366528.1	+	1_U	not_DE	0	-0.292	DNA replication complex GINS protein SLD5-like
-NW_020869988.1	XR_003476500.1	-	XM_027366527.1	-	2_U	DE	2	53.181	peroxiredoxin 1-like
-NW_020869988.1	XR_003476500.1	-	XM_027366526.1	+	3_U	DE	0	65.194	hydroxyacylglutathione hydrolase, mitochondrial-like, transcript variant X5
-NW_020869988.1	XR_003476500.1	-	XM_027366521.1	-	4_U	DE	1	77.699	uncharacterized LOC113814489
-NW_020869988.1	XR_003476500.1	-	XM_027366520.1	+	5_U	not_DE	0	86.024	polyglutamine-binding protein 1-like, transcript variant X2
-NW_020869988.1	XR_003476500.1	-	XM_027366530.1	+	1_D	not_DE	0	26.321	putative lysozyme-like protein
-NW_020869988.1	XR_003476500.1	-	XM_027366531.1	+	2_D	not_DE	0	36.613	protein misato homolog 1-like
+NW_020869988.1	XR_003476501.1	-	XM_027366530.1	+	1_D	not_DE	0	14.442	putative lysozyme-like protein
+NW_020869988.1	XR_003476501.1	-	XM_027366531.1	+	2_D	not_DE	0	24.734	protein misato homolog 1-like
+NW_020869988.1	XR_003476503.1	-	XM_027366528.1	+	1_U	not_DE	0	-0.292	DNA replication complex GINS protein SLD5-like
+NW_020869988.1	XR_003476503.1	-	XM_027366527.1	-	2_U	DE	2	53.181	peroxiredoxin 1-like
+NW_020869988.1	XR_003476503.1	-	XM_027366526.1	+	3_U	DE	0	65.194	hydroxyacylglutathione hydrolase, mitochondrial-like, transcript variant X5
+NW_020869988.1	XR_003476503.1	-	XM_027366521.1	-	4_U	DE	1	77.699	uncharacterized LOC113814489
+NW_020869988.1	XR_003476503.1	-	XM_027366520.1	+	5_U	not_DE	0	86.024	polyglutamine-binding protein 1-like, transcript variant X2
 NW_020869988.1	XR_003476507.1	+	XM_027366531.1	+	1_U	not_DE	0	23.050	protein misato homolog 1-like
 NW_020869988.1	XR_003476507.1	+	XM_027366530.1	+	2_U	not_DE	0	44.768	putative lysozyme-like protein
 NW_020869988.1	XR_003476507.1	+	XM_027366532.1	+	1_D	DE	3	0.336	gamma-butyrobetaine dioxygenase-like

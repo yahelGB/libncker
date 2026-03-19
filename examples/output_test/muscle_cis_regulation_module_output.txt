@@ -8,16 +8,12 @@ NW_020868904.1	XR_003475609.1	+	XM_027355541.1	+	2_D	not_DE	0	319.235	uncharacte
 NW_020868904.1	XR_003475609.1	+	XM_027355542.1	-	3_D	not_DE	0	444.488	tripartite motif-containing protein 59-like
 NW_020868904.1	XR_003475609.1	+	XM_027355535.1	-	4_D	DE	1	453.956	uncharacterized LOC113804650, transcript variant X2
 NW_020868904.1	XR_003475609.1	+	XM_027355537.1	-	5_D	not_DE	0	730.483	MPN domain-containing protein-like
-NW_020869391.1	XR_003476044.1	-	XM_027360592.1	+	1_U	DE	2	3.674	myc box-dependent-interacting protein 1-like
-NW_020869391.1	XR_003476044.1	-	XM_027360591.1	-	2_U	not_DE	0	136.491	BTB/POZ domain-containing protein KCTD8-like
-NW_020869391.1	XR_003476044.1	-	XM_027360590.1	-	3_U	DE	0	271.163	trypsin-1-like
-NW_020869391.1	XR_003476044.1	-	XM_027360589.1	+	4_U	DE	0	280.360	uncharacterized LOC113809100
-NW_020869391.1	XR_003476044.1	-	XM_027360583.1	+	5_U	not_DE	0	289.657	von Willebrand factor A domain-containing protein 7-like
-NW_020869391.1	XR_003476046.1	-	XM_027360584.1	+	1_D	not_DE	0	28.056	sialidase-like
-NW_020869391.1	XR_003476046.1	-	XM_027360588.1	-	2_D	not_DE	0	38.123	uncharacterized LOC113809099
-NW_020869391.1	XR_003476046.1	-	XM_027360593.1	-	3_D	DE	0	46.811	uncharacterized LOC113809107
-NW_020869391.1	XR_003476046.1	-	XM_027360595.1	-	4_D	not_DE	0	74.992	ATP synthase subunit g, mitochondrial-like
-NW_020869391.1	XR_003476046.1	-	XM_027360596.1	+	5_D	DE	0	100.933	uncharacterized LOC113809109
+NW_020868395.1	XR_003475805.1	-	XM_027357682.1	-	1_D	DE	2	0.021	60S ribosomal protein L24-like
+NW_020868395.1	XR_003475805.1	-	XM_027357837.1	+	2_D	not_DE	0	6.866	PHD finger protein rhinoceros-like
+NW_020868395.1	XR_003475805.1	-	XM_027357699.1	-	3_D	DE	1	52.809	protein hu-li tai shao-like, transcript variant X2
+NW_020868395.1	XR_003475805.1	-	XM_027357817.1	+	4_D	DE	0	182.660	uncharacterized LOC113806651
+NW_020868395.1	XR_003475806.1	-	XM_027357657.1	+	1_U	DE	0	15.670	lipid droplet-associated hydrolase-like, transcript variant X2
+NW_020868395.1	XR_003475806.1	-	XM_027357826.1	+	2_U	not_DE	0	112.426	proline-rich extensin-like protein EPR1
 NW_020869751.1	XR_003476309.1	-	XM_027364236.1	-	1_D	not_DE	0	68.205	collagen alpha-1(II) chain-like
 NW_020869751.1	XR_003476309.1	-	XM_027364237.1	-	2_D	DE	0	103.100	WD repeat-containing protein 47-like
 NW_020869751.1	XR_003476309.1	-	XM_027364238.1	-	3_D	not_DE	0	124.466	protein Star-like

@@ -1,4 +1,5 @@
 mRNA_ID	product	lncRNA_IDs	mRNA_positions	ncbi_summary	go_biological_process	go_molecular_function	go_cellular_component
+XM_027350689.1	LIM and senescent cell antigen-like-containing domain protein 1, transcript variant X2	XR_003474921.1	1_D				
 XM_027351485.1	inversin-A-like	XR_003474979.1	1_U				
 XM_027351488.1	ankyrin-1-like	XR_003474979.1	1_D				
 XM_027352018.1	kynureninase-like	XR_003475024.1	1_D				

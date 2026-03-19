@@ -1,5 +1,6 @@
 mRNA_ID	product	lncRNA_IDs	mRNA_positions	ncbi_summary	go_biological_process	go_molecular_function	go_cellular_component
-XM_027360592.1	myc box-dependent-interacting protein 1-like	XR_003476044.1	1_U	DISCONTINUED: This record has been withdrawn by NCBI staff. This record represented a gene that is not currently annotated by NCBI.			
+XM_027357657.1	lipid droplet-associated hydrolase-like, transcript variant X2	XR_003475806.1	1_U				
+XM_027357682.1	60S ribosomal protein L24-like	XR_003475805.1	1_D				
 XM_027370783.1	obscurin-like	XR_003476908.1	1_D				
 XM_027371589.1	phosphoenolpyruvate carboxykinase, cytosolic [GTP]-like	XR_003477013.1	1_U				
 XM_027376764.1	integral membrane protein 2B-like, transcript variant X2	XR_003477469.1	1_U				
