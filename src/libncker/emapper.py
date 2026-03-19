@@ -173,7 +173,7 @@ def _taxon_to_eggnoc_scope(taxon_id: int, api_key: str, delay: float) -> int:
 
 
 # ---------------------------------------------------------------------------
-# Step 2 – Fetch protein FASTAs for XM_ mRNAs via NCBI elink
+# Step 2 – Fetch protein FASTAs for XM_ mRNAs via fasta_cds_aa
 # ---------------------------------------------------------------------------
 
 def fetch_protein_fastas(
@@ -183,117 +183,56 @@ def fetch_protein_fastas(
 ) -> dict[str, str]:
     """Return ``{mrna_id: protein_fasta}`` for each XM_/XR_ accession.
 
-    Uses NCBI elink (nucleotide → protein) to find the corresponding
-    protein, then efetch to retrieve the FASTA sequence.
-    Skips accessions for which no protein link is found.
-    The FASTA header of each entry is replaced with the original *mrna_id*
-    so eggNOG-mapper returns results keyed by mRNA ID.
+    Uses NCBI efetch with ``rettype=fasta_cds_aa`` directly on the mRNA
+    accession — no elink needed. This is reliable for predicted RefSeq
+    records (XM_) that often lack nucleotide→protein elink entries.
+    The FASTA header is replaced with the mRNA ID so eggNOG-mapper
+    returns results keyed by mRNA ID.
     """
     print(f"  [emapper] Fetching protein FASTAs for {len(mrna_ids)} mRNAs…")
 
-    # 1) esearch every accession in nucleotide DB to get numeric UIDs
-    nucl_uid_map: dict[str, str] = {}  # mrna_id → nucleotide UID
-    for mrna_id in mrna_ids:
-        bare = mrna_id.split(".")[0]
-        try:
-            data = json.loads(_http_get(
-                f"{_NCBI_BASE}/esearch.fcgi?"
-                + _qs({"db": "nucleotide", "term": bare, "retmode": "json", "retmax": "1"}, api_key)
-            ))
-            ids = data.get("esearchresult", {}).get("idlist", [])
-            if ids:
-                nucl_uid_map[mrna_id] = ids[0]
-        except Exception:
-            pass
-        time.sleep(delay)
+    result: dict[str, str] = {}
 
-    if not nucl_uid_map:
-        return {}
-
-    # 2) elink nucleotide → protein (batch, up to 50 at a time)
-    prot_uid_map: dict[str, str] = {}  # mrna_id → protein UID
-    nucl_items = list(nucl_uid_map.items())
-    for i in range(0, len(nucl_items), 50):
-        batch = nucl_items[i : i + 50]
-        ids_str = ",".join(uid for _, uid in batch)
-        try:
-            link_data = json.loads(_http_get(
-                f"{_NCBI_BASE}/elink.fcgi?"
-                + _qs(
-                    {"dbfrom": "nucleotide", "db": "protein", "id": ids_str,
-                     "retmode": "json", "cmd": "neighbor"},
-                    api_key,
-                )
-            ))
-            for ls in link_data.get("linksets", []):
-                input_uid = str(ls.get("ids", [None])[0])
-                # find which mrna_id this belongs to
-                mrna_for_uid = next(
-                    (m for m, u in nucl_uid_map.items() if u == input_uid), None
-                )
-                if mrna_for_uid is None:
-                    continue
-                for lsdb in ls.get("linksetdbs", []):
-                    prot_links = lsdb.get("links", [])
-                    if prot_links:
-                        prot_uid_map[mrna_for_uid] = str(prot_links[0])
-                        break
-        except Exception:
-            pass
-        time.sleep(delay)
-
-    if not prot_uid_map:
-        return {}
-
-    # 3) efetch protein FASTAs in batches
-    prot_items = list(prot_uid_map.items())
-    uid_to_fasta: dict[str, str] = {}
-
-    for i in range(0, len(prot_items), 50):
-        batch = prot_items[i : i + 50]
-        uid_list = [uid for _, uid in batch]
+    # Fetch in batches of 20 (fasta_cds_aa can be large per record)
+    for i in range(0, len(mrna_ids), 20):
+        batch = mrna_ids[i : i + 20]
+        ids_str = ",".join(batch)
         try:
             fasta_text = _http_get(
                 f"{_NCBI_BASE}/efetch.fcgi?"
                 + _qs(
-                    {"db": "protein", "id": ",".join(uid_list),
-                     "rettype": "fasta", "retmode": "text"},
+                    {"db": "nucleotide", "id": ids_str,
+                     "rettype": "fasta_cds_aa", "retmode": "text"},
                     api_key,
                 )
             ).decode("utf-8", errors="replace")
 
-            # Split into individual FASTA records
-            records: list[tuple[str, list[str]]] = []
-            header = ""
-            seq_lines: list[str] = []
+            # Split multi-FASTA into individual records
+            current_header = ""
+            current_seq: list[str] = []
+
+            def _save(hdr: str, seq: list[str]) -> None:
+                if not hdr or not seq:
+                    return
+                # Try to match header back to one of the batch accessions
+                matched = next(
+                    (m for m in batch if m.split(".")[0] in hdr or m in hdr), None
+                )
+                if matched:
+                    result[matched] = f">{matched}\n" + "\n".join(seq)
+
             for line in fasta_text.splitlines():
                 if line.startswith(">"):
-                    if header:
-                        records.append((header, seq_lines))
-                    header = line
-                    seq_lines = []
+                    _save(current_header, current_seq)
+                    current_header = line
+                    current_seq = []
                 elif line.strip():
-                    seq_lines.append(line.strip())
-            if header:
-                records.append((header, seq_lines))
+                    current_seq.append(line.strip())
+            _save(current_header, current_seq)
 
-            # Map protein UID → fasta (header encodes the UID as gi|NNN| or accession)
-            for j, (mrna_id, uid) in enumerate(batch):
-                if j < len(records):
-                    hdr, seq = records[j]
-                    uid_to_fasta[uid] = hdr + "\n" + "\n".join(seq)
-        except Exception:
-            pass
+        except Exception as exc:
+            print(f"  [emapper] FASTA fetch error for batch {i}: {exc}")
         time.sleep(delay)
-
-    # 4) Rename FASTA headers to mRNA IDs for easy post-lookup
-    result: dict[str, str] = {}
-    for mrna_id, puid in prot_uid_map.items():
-        fasta = uid_to_fasta.get(puid, "")
-        if fasta:
-            lines = fasta.splitlines()
-            lines[0] = f">{mrna_id}"
-            result[mrna_id] = "\n".join(lines)
 
     print(f"  [emapper] Retrieved protein sequences for {len(result)}/{len(mrna_ids)} mRNAs")
     return result
@@ -307,6 +246,7 @@ def submit_emapper_job(fasta_str: str, tax_scope: int = 33208) -> str | None:
     """Submit FASTA sequences to the eggNOG-mapper web API.
 
     Returns the job ID string, or None on failure.
+    Retries up to 3 times with a 10-second pause between attempts.
     """
     payload = json.dumps(
         {
@@ -318,15 +258,20 @@ def submit_emapper_job(fasta_str: str, tax_scope: int = 33208) -> str | None:
         }
     ).encode("utf-8")
 
-    try:
-        resp = json.loads(_http_post(f"{_EMAPPER_BASE}/api/job/", payload))
-        job_id = resp.get("jobid") or (resp.get("data") or {}).get("jobid")
-        if job_id:
-            print(f"  [emapper] Job submitted: {job_id}")
-        return job_id
-    except Exception as exc:
-        print(f"  [emapper] Job submission failed: {exc}")
-        return None
+    for attempt in range(1, 4):
+        try:
+            resp = json.loads(_http_post(f"{_EMAPPER_BASE}/api/job/", payload))
+            job_id = resp.get("jobid") or (resp.get("data") or {}).get("jobid")
+            if job_id:
+                print(f"  [emapper] Job submitted: {job_id}")
+                return job_id
+        except Exception as exc:
+            print(f"  [emapper] Submission attempt {attempt}/3 failed: {exc}")
+            if attempt < 3:
+                time.sleep(10)
+
+    print(f"  [emapper] All submission attempts failed — eggNOG-mapper server may be busy.")
+    return None
 
 
 def poll_emapper_job(
@@ -344,7 +289,6 @@ def poll_emapper_job(
         try:
             status = json.loads(_http_get(f"{_EMAPPER_BASE}/api/job/{job_id}/"))
             state = str(status.get("status", "")).upper()
-            elapsed = int(time.time() % 60)
             if state in ("FINISHED", "DONE", "SUCCESS", "COMPLETED"):
                 print(f"  [emapper] Job {job_id} finished.")
                 return True
