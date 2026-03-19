@@ -75,6 +75,30 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Genome annotation GFF (used with --emapper to auto-detect the organism's taxonomic scope).",
     )
+    an.add_argument(
+        "--emapper-db",
+        default=None,
+        help=(
+            "Path to local eggNOG database directory. "
+            "Triggers local mode: runs emapper.py on PATH instead of the web API. "
+            "Useful on HPC nodes with no internet or when the DB is already downloaded."
+        ),
+    )
+    an.add_argument(
+        "--tax-scope",
+        type=int,
+        default=None,
+        help=(
+            "Explicit eggNOG taxonomic scope ID (e.g. 6656=Arthropoda, 33208=Metazoa). "
+            "Overrides auto-detection from --gff. Useful when NCBI is unreachable."
+        ),
+    )
+    an.add_argument(
+        "--emapper-cpu",
+        type=int,
+        default=4,
+        help="CPUs for local emapper.py run (default: 4, ignored in web mode).",
+    )
 
     # run = full pipeline
     runp = sub.add_parser("run", help="Run full pipeline: (IDs) -> exclusive -> cis module.")
@@ -112,6 +136,9 @@ def main() -> None:
             positions=set(args.positions.split(",")),
             use_emapper=args.emapper,
             gff=Path(args.gff) if args.gff else None,
+            emapper_db=Path(args.emapper_db) if args.emapper_db else None,
+            tax_scope=args.tax_scope,
+            emapper_cpu=args.emapper_cpu,
         )
         return
 

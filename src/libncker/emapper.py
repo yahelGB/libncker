@@ -1,16 +1,23 @@
-"""eggNOG-mapper web API integration (stdlib only).
+"""eggNOG-mapper integration (stdlib only) — web API or local installation.
 
-Workflow:
+Web mode (default):
   1. Detect the organism's taxonomic scope from the GFF assembly accession
-  2. Fetch protein FASTAs for XM_ mRNA IDs via NCBI (elink nucleotide→protein)
+  2. Fetch protein FASTAs for XM_ mRNA IDs via NCBI (fasta_cds_aa)
   3. Submit FASTAs to eggNOG-mapper web API with the detected tax_scope
   4. Poll until done, fetch annotations
-  5. Look up GO term names and aspects via QuickGO API
+  5. Look up GO term names/aspects via QuickGO API
   6. Return per-mRNA GO annotation dicts for all three GO categories
+
+Local mode (--emapper-db):
+  Steps 1–2 are the same; instead of the web API, emapper.py is run locally
+  using the provided database directory.
 """
 from __future__ import annotations
 
 import json
+import shutil
+import subprocess
+import tempfile
 import time
 import urllib.error
 import urllib.parse
@@ -36,6 +43,13 @@ _EGGNOC_SCOPE_IDS: list[int] = [
 _TAXON_SCOPE: dict[int, int] = {
     6689: 6656,   # Litopenaeus vannamei → Arthropoda
     6683: 6656,   # Penaeus monodon      → Arthropoda
+}
+
+# Hard-coded GCF/GCA assembly accession → NCBI taxon ID.
+# Avoids network calls for known assemblies (useful on HPC with no internet).
+_ASSEMBLY_TAXON: dict[str, int] = {
+    "GCF_003789085": 6689,   # L. vannamei ASM378908v1
+    "GCF_003789085.1": 6689,
 }
 
 
@@ -79,14 +93,22 @@ def detect_tax_scope(gff_path: Path, api_key: str = "", delay: float = 0.4) -> i
     """
     accession = _parse_assembly_accession(gff_path)
     if not accession:
-        print("  [emapper] Could not detect assembly accession; defaulting tax_scope=Metazoa")
-        return 33208
+        print("  [emapper] Could not detect assembly accession; defaulting tax_scope=Arthropoda")
+        return 6656
 
+    # 1) Check hard-coded map first — no network needed
+    taxon_id = _ASSEMBLY_TAXON.get(accession) or _ASSEMBLY_TAXON.get(accession.split(".")[0])
+    if taxon_id:
+        scope = _TAXON_SCOPE.get(taxon_id, 33208)
+        print(f"  [emapper] Assembly {accession} → taxon {taxon_id} → eggNOG scope {scope} (cached)")
+        return scope
+
+    # 2) Fall back to NCBI lookup
     try:
         taxon_id = _accession_to_taxon(accession, api_key, delay)
     except Exception as exc:
-        print(f"  [emapper] NCBI taxonomy lookup failed ({exc}); defaulting tax_scope=Metazoa")
-        return 33208
+        print(f"  [emapper] NCBI taxonomy lookup failed ({exc}); defaulting tax_scope=Arthropoda")
+        return 6656
 
     scope = _taxon_to_eggnoc_scope(taxon_id, api_key, delay)
     print(f"  [emapper] Assembly {accession} → taxon {taxon_id} → eggNOG scope {scope}")
@@ -376,6 +398,77 @@ def lookup_go_terms(
 
 
 # ---------------------------------------------------------------------------
+# Local eggNOG-mapper runner
+# ---------------------------------------------------------------------------
+
+def _run_emapper_local(
+    fasta_str: str,
+    tax_scope: int,
+    emapper_db: Path,
+    cpu: int = 4,
+) -> dict[str, list[str]]:
+    """Run emapper.py locally and return {mrna_id: [GO_id, …]}.
+
+    Writes a temp FASTA, runs ``emapper.py``, parses the ``.annotations`` file.
+    Requires ``emapper.py`` to be on PATH (e.g. conda activate eggnog-mapper).
+    """
+    emapper_cmd = shutil.which("emapper.py")
+    if not emapper_cmd:
+        print("  [emapper] emapper.py not found on PATH; skipping local run.")
+        return {}
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp = Path(tmpdir)
+        fasta_file = tmp / "proteins.fasta"
+        fasta_file.write_text(fasta_str)
+
+        cmd = [
+            emapper_cmd,
+            "-i", str(fasta_file),
+            "--itype", "proteins",
+            "-o", "emapper_out",
+            "--output_dir", str(tmp),
+            "--data_dir", str(emapper_db),
+            "--tax_scope", str(tax_scope),
+            "--cpu", str(cpu),
+            "--no_annot", "False",
+            "--override",
+        ]
+        print(f"  [emapper] Running locally: {' '.join(cmd[:6])} …")
+        try:
+            subprocess.run(cmd, check=True, capture_output=True)
+        except subprocess.CalledProcessError as exc:
+            print(f"  [emapper] Local run failed:\n{exc.stderr.decode()}")
+            return {}
+
+        ann_file = tmp / "emapper_out.emapper.annotations"
+        if not ann_file.exists():
+            print("  [emapper] Annotations file not found after local run.")
+            return {}
+
+        return _parse_annotations_tsv(ann_file.read_text())
+
+
+def _parse_annotations_tsv(tsv: str) -> dict[str, list[str]]:
+    """Parse eggNOG-mapper annotations TSV → {query: [GO_id, …]}."""
+    result: dict[str, list[str]] = {}
+    for line in tsv.splitlines():
+        if line.startswith("#") or not line.strip():
+            continue
+        cols = line.split("\t")
+        if len(cols) < 10:
+            continue
+        query = cols[0]
+        go_col = cols[9]
+        if not go_col or go_col in ("-", "NA"):
+            continue
+        go_ids = [g.strip() for g in go_col.split(",") if g.strip().startswith("GO:")]
+        if go_ids:
+            result[query] = go_ids
+    return result
+
+
+# ---------------------------------------------------------------------------
 # Public entry point
 # ---------------------------------------------------------------------------
 
@@ -384,6 +477,9 @@ def run_emapper_annotation(
     gff_path: Path | None = None,
     api_key: str = "",
     delay: float = 0.4,
+    emapper_db: Path | None = None,
+    tax_scope_override: int | None = None,
+    cpu: int = 4,
 ) -> dict[str, dict[str, list[str]]]:
     """Full eggNOG-mapper annotation pipeline for a list of mRNA accessions.
 
@@ -395,12 +491,19 @@ def run_emapper_annotation(
             "cellular_component": ["term name", …],
         }
 
+    When *emapper_db* is set, runs ``emapper.py`` locally instead of the
+    web API — useful on HPC nodes with restricted internet or when the
+    database is already downloaded.
+
     Returns an empty dict on any unrecoverable error.
     """
     empty: dict[str, dict[str, list[str]]] = {}
 
     # 1) Tax scope
-    if gff_path is not None:
+    if tax_scope_override is not None:
+        tax_scope = tax_scope_override
+        print(f"  [emapper] Using explicit tax_scope={tax_scope}")
+    elif gff_path is not None:
         tax_scope = detect_tax_scope(gff_path, api_key=api_key, delay=delay)
     else:
         print("  [emapper] No GFF provided; defaulting tax_scope=Arthropoda")
@@ -414,17 +517,20 @@ def run_emapper_annotation(
 
     fasta_str = "\n".join(fasta_map.values())
 
-    # 3) Submit job
-    job_id = submit_emapper_job(fasta_str, tax_scope=tax_scope)
-    if not job_id:
-        return empty
+    # 3a) Local mode
+    if emapper_db is not None:
+        go_id_map = _run_emapper_local(fasta_str, tax_scope, emapper_db, cpu=cpu)
+        if not go_id_map:
+            return empty
+    else:
+        # 3b) Web API mode
+        job_id = submit_emapper_job(fasta_str, tax_scope=tax_scope)
+        if not job_id:
+            return empty
+        if not poll_emapper_job(job_id):
+            return empty
+        go_id_map = fetch_emapper_annotations(job_id)
 
-    # 4) Poll
-    if not poll_emapper_job(job_id):
-        return empty
-
-    # 5) Fetch annotations (GO IDs)
-    go_id_map = fetch_emapper_annotations(job_id)
     if not go_id_map:
         print("  [emapper] No GO annotations returned.")
         return empty

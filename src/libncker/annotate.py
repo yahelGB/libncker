@@ -186,6 +186,9 @@ def run_annotate(
     positions: set[str] = _DEFAULT_POSITIONS,
     use_emapper: bool = False,
     gff: Path | None = None,
+    emapper_db: Path | None = None,
+    tax_scope: int | None = None,
+    emapper_cpu: int = 4,
 ) -> None:
     cis_files = sorted(cis_dir.glob("*_cis_regulation_module_output.txt"))
     if not cis_files:
@@ -211,6 +214,9 @@ def run_annotate(
                 gff_path=gff,
                 api_key=ncbi_api_key,
                 delay=delay,
+                emapper_db=emapper_db,
+                tax_scope_override=tax_scope,
+                cpu=emapper_cpu,
             )
 
         with out.open("w", encoding="utf-8", newline="") as fh:
