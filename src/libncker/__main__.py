@@ -199,7 +199,7 @@ def main() -> None:
 
         # 1) IDs
         if args.lnc_ids_from_gff:
-            suffix = "tx" if args.level == "transcript" else "gene"
+            suffix = args.level
             lncs_path = outdir / f"lncRNA_IDs.from_gff.{suffix}.txt"
             ids, stats = extract_lncrna_ids_from_gff(Path(args.gff), level=args.level)
             with lncs_path.open("w", encoding="utf-8") as f:
