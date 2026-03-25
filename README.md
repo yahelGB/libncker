@@ -19,6 +19,7 @@ Libncker is a lightweight CLI to:
   - [5) intergenic-stats](#5-summarize-intergenic-distances-from-a-gff)
   - [6) intron-stats](#6-summarize-intron-lengths-from-a-tsv-column)
   - [7) annotate](#7-annotate-de-mrnas-with-ncbi-gene-summaries)
+- [Upstream workflow (Snakemake)](#upstream-workflow-snakemake)
 - [Inputs](#inputs)
 - [Outputs](#outputs)
 - [How scoring works](#how-scoring-works)
@@ -218,6 +219,20 @@ per unique mRNA, with columns: `mRNA_ID`, `product`, `lncRNA_IDs`, `mRNA_positio
 Works with any number of tissues; no configuration needed.
 
 > **Note:** Uses only Python standard library — no extra packages required.
+---
+
+## Upstream workflow (Snakemake)
+
+The `snakemake/` directory contains a general-purpose paired-end RNA-seq pipeline that handles everything from raw FASTQs to pairwise DEG results:
+
+**QC → alignment → count merging → pairwise DESeq2**
+
+The pipeline is useful for any DEG analysis. When used upstream of libncker, the `*_intersect.txt` files produced by the `deseq2` rule are the direct input for `libncker exclusive` and `libncker neighbors`.
+
+Supported aligners: `hisat2` (splice-aware, recommended for RNA-seq), `bowtie2`, `bwa`. Designed for SGE HPC clusters with environment modules, but also runs locally.
+
+See [`snakemake/CLAUDE.md`](snakemake/CLAUDE.md) for full configuration, usage, and cluster setup details.
+
 ---
 
 ## Inputs
