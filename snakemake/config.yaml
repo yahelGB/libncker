@@ -1,0 +1,37 @@
+# Aligner selection: hisat2, bowtie2, or bwa
+aligner: "bowtie2"
+
+# --- Paths ---
+paths:
+  data_dir:    "raw_data"       # directory containing {sample}_1.fastq.gz / {sample}_2.fastq.gz
+  output_dir:  "results"        # all pipeline outputs will be written here
+  genome:      "GCF_003789085.1_ASM378908v1_rna.fna"               # path to reference genome FASTA (.fna / .fa)
+  annotation:  "GCF_003789085.1_ASM378908v1_genomic.gff"               # optional: path to annotation GTF; leave empty if not available
+  splice_sites: ""              # optional: pre-generated splice sites file (hisat2 only)
+
+# --- Python interpreter ---
+# On HPC: set to "python3" (the module load provides the right environment)
+# On workstation: set to the venv python, e.g. ".venv/bin/python3"
+python_bin: ".venv/bin/python3"
+
+# --- Module names on the cluster (update versions to match your system) ---
+# On a workstation these are ignored — tools must be on $PATH instead
+modules:
+  bowtie2: "programs/bowtie2-2.5.1"
+  bwa:     "programs/bwa-0.7.17"
+  python:  "programs/python-3.11"   # must have pandas, pydeseq2, matplotlib installed
+
+# --- DESeq2 ---
+# Path to sample metadata table (columns: sample, condition)
+# sample names must match the FASTQ filename prefix ({sample}_1.fastq.gz)
+# Example:
+#   sample,condition
+#   SRR001,gills
+#   SRR002,hemocytes
+metadata: "metadata.csv"
+
+# Thresholds applied to all pairwise comparisons
+deseq2:
+  padj:       0.05   # adjusted p-value cutoff
+  log2fc:     1.5    # minimum absolute log2 fold change
+  min_counts: 10     # minimum total counts across samples to keep a gene

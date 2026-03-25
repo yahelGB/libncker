@@ -1,0 +1,29 @@
+{
+  "__default__": {
+    "options": "-cwd -j y -l h_vmem=10G"
+  },
+  "check_pairs": {
+    "options": "-cwd -j y -pe thread 6 -l h_vmem=16G"
+  },
+  "build_index": {
+    "options": "-cwd -j y -pe thread 6 -l h_vmem=16G"
+  },
+  "align": {
+    "options": "-cwd -j y -pe thread 8 -l h_vmem=32G"
+  },
+  "sam_to_bam": {
+    "options": "-cwd -j y -pe thread 8 -l h_vmem=16G"
+  },
+  "sort_bam": {
+    "options": "-cwd -j y -pe thread 8 -l h_vmem=10G"
+  },
+  "flagstat": {
+    "options": "-cwd -j y -pe thread 4 -l h_vmem=10G"
+  },
+  "merge_counts": {
+    "options": "-cwd -j y -l h_vmem=8G"
+  },
+  "deseq2": {
+    "options": "-cwd -j y -l h_vmem=32G"
+  }
+}

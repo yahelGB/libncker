@@ -1,0 +1,385 @@
+import os
+
+configfile: "config.yaml"
+
+ALIGNER = config["aligner"]
+
+# paths — all sourced from config.yaml
+data_dir     = config["paths"]["data_dir"]
+out          = config["paths"]["output_dir"]
+genome_dir   = config["paths"]["genome"]
+annotation_gtf   = config["paths"]["annotation"]
+splice_sites_file = config["paths"]["splice_sites"]
+USE_GTF          = bool(annotation_gtf) and os.path.isfile(annotation_gtf)
+
+synced_dir   = os.path.join(out, "raw_data_synced")
+fastqc_dir   = os.path.join(out, "fastqc_reports")
+mapped_dir   = os.path.join(out, "processed_bams")
+stats_dir    = os.path.join(out, "stats")
+coverage_dir = os.path.join(out, "coverage")
+counts_dir   = os.path.join(out, "counts")
+deseq2_dir   = os.path.join(out, "deseq2")
+
+ht2_index_prefix = os.path.join(out, "index_genome_ht2", "genome")
+bt2_index_prefix = os.path.join(out, "index_genome_bt2", "genome")
+
+# sample detection
+SAMPLES = sorted({
+    fn.split("_")[0]
+    for fn in os.listdir(data_dir)
+    if fn.endswith("_1.fastq.gz") or fn.endswith("_2.fastq.gz")
+})
+
+# aligner index configuration
+if ALIGNER == "hisat2":
+    INDEX_FILES  = expand(ht2_index_prefix + ".{ext}",
+                          ext=["1.ht2","2.ht2","3.ht2","4.ht2","5.ht2","6.ht2","7.ht2","8.ht2"])
+    INDEX_PREFIX = ht2_index_prefix
+elif ALIGNER == "bowtie2":
+    INDEX_FILES  = expand(bt2_index_prefix + ".{ext}",
+                          ext=["1.bt2","2.bt2","3.bt2","4.bt2","rev.1.bt2","rev.2.bt2"])
+    INDEX_PREFIX = bt2_index_prefix
+elif ALIGNER == "bwa":
+    INDEX_FILES  = [genome_dir + ext for ext in [".amb", ".ann", ".bwt", ".pac", ".sa"]]
+    INDEX_PREFIX = genome_dir
+else:
+    raise ValueError(f"Unknown aligner '{ALIGNER}'. Choose: hisat2, bowtie2, bwa")
+
+# main
+rule all:
+    input:
+        expand(f"{fastqc_dir}/{{sample}}_1_fastqc.html", sample=SAMPLES),
+        expand(f"{fastqc_dir}/{{sample}}_1_fastqc.zip",  sample=SAMPLES),
+        expand(f"{fastqc_dir}/{{sample}}_2_fastqc.html", sample=SAMPLES),
+        expand(f"{fastqc_dir}/{{sample}}_2_fastqc.zip",  sample=SAMPLES),
+        expand(f"{coverage_dir}/{{sample}}.coverage",    sample=SAMPLES),
+        expand(f"{stats_dir}/{{sample}}.seqkit",         sample=SAMPLES),
+        expand(f"{stats_dir}/{{sample}}.flagstat",       sample=SAMPLES),
+        f"{fastqc_dir}/multiqc_report.html",
+        f"{counts_dir}/count_table.txt",
+        directory(deseq2_dir)
+
+# check pairs
+rule check_pairs:
+    input:
+        read_1 = f"{data_dir}/{{sample}}_1.fastq.gz",
+        read_2 = f"{data_dir}/{{sample}}_2.fastq.gz"
+    output:
+        seqkit_output = f"{stats_dir}/{{sample}}.seqkit"
+    shell:
+        '''
+        set +u
+        source ~/.bashrc
+        command -v module &>/dev/null && module load programs/seqkit-2.5.1
+        THREADS=${{NSLOTS:-$(nproc)}}
+        seqkit stats -j $THREADS -T {input.read_1} {input.read_2} > {output.seqkit_output}
+        '''
+
+rule repair_files:
+    input:
+        read_1        = f"{data_dir}/{{sample}}_1.fastq.gz",
+        read_2        = f"{data_dir}/{{sample}}_2.fastq.gz",
+        seqkit_output = f"{stats_dir}/{{sample}}.seqkit"
+    output:
+        read_1     = f"{synced_dir}/{{sample}}_1.fastq.gz",
+        read_2     = f"{synced_dir}/{{sample}}_2.fastq.gz",
+        singletons = f"{synced_dir}/{{sample}}_singletons.fastq.gz"
+    log:
+        f"{stats_dir}/{{sample}}.sync_pairs.log"
+    shell:
+        '''
+        set +u
+        source ~/.bashrc
+        command -v module &>/dev/null && module load programs/bbmap-38.84
+
+        r1c=$(awk 'NR==2{{print $4}}' {input.seqkit_output})
+        r2c=$(awk 'NR==3{{print $4}}' {input.seqkit_output})
+
+        if [ "$r1c" != "$r2c" ]; then
+            echo "[sync] {wildcards.sample}: MISMATCH ($r1c vs $r2c) → repair.sh" &>> {log}
+            repair.sh \
+              in1={input.read_1} in2={input.read_2} \
+              out1={output.read_1} out2={output.read_2} \
+              outs={output.singletons} overwrite=t &>> {log}
+        else
+            echo "[sync] {wildcards.sample}: OK ($r1c==$r2c) → symlinks" &>> {log}
+            ln -sf $(realpath {input.read_1}) {output.read_1}
+            ln -sf $(realpath {input.read_2}) {output.read_2}
+            gzip -c </dev/null > {output.singletons}
+        fi
+        '''
+
+# quality reports
+rule fastqc:
+    input:
+        read_1 = f"{data_dir}/{{sample}}_1.fastq.gz",
+        read_2 = f"{data_dir}/{{sample}}_2.fastq.gz"
+    output:
+        read_1_html = f"{fastqc_dir}/{{sample}}_1_fastqc.html",
+        read_1_zip  = f"{fastqc_dir}/{{sample}}_1_fastqc.zip",
+        read_2_html = f"{fastqc_dir}/{{sample}}_2_fastqc.html",
+        read_2_zip  = f"{fastqc_dir}/{{sample}}_2_fastqc.zip"
+    params:
+        outdir = fastqc_dir
+    shell:
+        '''
+        set +u
+        source ~/.bashrc
+        command -v module &>/dev/null && module load programs/fastqc-0.12.1
+        fastqc {input.read_1} {input.read_2} --outdir {params.outdir}
+        '''
+
+rule multiqc:
+    input:
+        expand(f"{fastqc_dir}/{{sample}}_1_fastqc.zip", sample=SAMPLES),
+        expand(f"{fastqc_dir}/{{sample}}_2_fastqc.zip", sample=SAMPLES)
+    output:
+        f"{fastqc_dir}/multiqc_report.html"
+    params:
+        outdir = fastqc_dir
+    shell:
+        '''
+        set +u
+        source ~/.bashrc
+        command -v module &>/dev/null && module load programs/multiqc-1.23
+        multiqc {params.outdir} -o {params.outdir}
+        '''
+
+# genome index
+if ALIGNER == "hisat2":
+    rule build_index:
+        input:
+            fasta = genome_dir
+        output:
+            INDEX_FILES
+        params:
+            prefix = ht2_index_prefix
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load programs/hisat2-2.1.0
+            THREADS=${{NSLOTS:-$(nproc)}}
+            hisat2-build -p $THREADS {input.fasta} {params.prefix}
+            '''
+
+elif ALIGNER == "bowtie2":
+    rule build_index:
+        input:
+            fasta = genome_dir
+        output:
+            INDEX_FILES
+        params:
+            module = config["modules"]["bowtie2"],
+            prefix = bt2_index_prefix
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load {params.module}
+            THREADS=${{NSLOTS:-$(nproc)}}
+            bowtie2-build --threads $THREADS {input.fasta} {params.prefix}
+            '''
+
+elif ALIGNER == "bwa":
+    rule build_index:
+        input:
+            fasta = genome_dir
+        output:
+            INDEX_FILES
+        params:
+            module = config["modules"]["bwa"]
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load {params.module}
+            bwa index {input.fasta}
+            '''
+
+# alignment
+if ALIGNER == "hisat2":
+    rule align:
+        input:
+            read_1 = f"{synced_dir}/{{sample}}_1.fastq.gz",
+            read_2 = f"{synced_dir}/{{sample}}_2.fastq.gz",
+            idx    = INDEX_FILES
+        output:
+            sam     = temp(f"{mapped_dir}/{{sample}}.sam"),
+            summary = f"{stats_dir}/{{sample}}_alignment_summary.txt",
+            novel   = f"{mapped_dir}/{{sample}}_novel_splicesites.txt"
+        params:
+            prefix = ht2_index_prefix
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load programs/hisat2-2.1.0
+            THREADS=${{NSLOTS:-$(nproc)}}
+            hisat2 -p $THREADS -x {params.prefix} \
+                   -1 {input.read_1} -2 {input.read_2} \
+                   --rna-strandness RF --dta \
+                   --novel-splicesite-outfile {output.novel} \
+                   --summary-file {output.summary} \
+                   -S {output.sam}
+            '''
+
+elif ALIGNER == "bowtie2":
+    rule align:
+        input:
+            read_1 = f"{synced_dir}/{{sample}}_1.fastq.gz",
+            read_2 = f"{synced_dir}/{{sample}}_2.fastq.gz",
+            idx    = INDEX_FILES
+        output:
+            sam     = temp(f"{mapped_dir}/{{sample}}.sam"),
+            summary = f"{stats_dir}/{{sample}}_alignment_summary.txt"
+        params:
+            module = config["modules"]["bowtie2"],
+            prefix = bt2_index_prefix
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load {params.module}
+            THREADS=${{NSLOTS:-$(nproc)}}
+            bowtie2 -p $THREADS -x {params.prefix} \
+                    -1 {input.read_1} -2 {input.read_2} \
+                    2> {output.summary} \
+                    -S {output.sam}
+            '''
+
+elif ALIGNER == "bwa":
+    rule align:
+        input:
+            read_1 = f"{synced_dir}/{{sample}}_1.fastq.gz",
+            read_2 = f"{synced_dir}/{{sample}}_2.fastq.gz",
+            idx    = INDEX_FILES
+        output:
+            sam     = temp(f"{mapped_dir}/{{sample}}.sam"),
+            summary = f"{stats_dir}/{{sample}}_alignment_summary.txt"
+        params:
+            module = config["modules"]["bwa"],
+            genome = genome_dir
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load {params.module}
+            THREADS=${{NSLOTS:-$(nproc)}}
+            bwa mem -t $THREADS {params.genome} \
+                    {input.read_1} {input.read_2} \
+                    > {output.sam} \
+                    2> {output.summary}
+            '''
+
+# sam to bam
+rule sam_to_bam:
+    input:
+        f"{mapped_dir}/{{sample}}.sam"
+    output:
+        temp(f"{mapped_dir}/{{sample}}.bam")
+    shell:
+        '''
+        set +u
+        source ~/.bashrc
+        command -v module &>/dev/null && module load programs/samtools-1.10
+        THREADS=${{NSLOTS:-$(nproc)}}
+        samtools view -Sb -@ $THREADS {input} > {output}
+        '''
+
+# bam sorting
+rule sort_bam:
+    input:
+        f"{mapped_dir}/{{sample}}.bam"
+    output:
+        bam = f"{mapped_dir}/{{sample}}.sorted.bam"
+    shell:
+        '''
+        set +u
+        source ~/.bashrc
+        command -v module &>/dev/null && module load programs/samtools-1.10
+        THREADS=${{NSLOTS:-$(nproc)}}
+        samtools sort -@ $THREADS {input} -o {output.bam}
+        '''
+
+# stats
+rule flagstat:
+    input:
+        f"{mapped_dir}/{{sample}}.sorted.bam"
+    output:
+        f"{stats_dir}/{{sample}}.flagstat"
+    shell:
+        '''
+        set +u
+        source ~/.bashrc
+        command -v module &>/dev/null && module load programs/samtools-1.10
+        THREADS=${{NSLOTS:-$(nproc)}}
+        samtools flagstat -@ $THREADS {input} > {output}
+        '''
+
+# coverage
+rule coverage:
+    input:
+        f"{mapped_dir}/{{sample}}.sorted.bam"
+    output:
+        cov = f"{coverage_dir}/{{sample}}.coverage"
+    shell:
+        '''
+        set +u
+        source ~/.bashrc
+        command -v module &>/dev/null && module load programs/samtools-1.10
+        samtools coverage {input} | awk '{{print $1"\t"$4}}' > {output}
+        '''
+
+# count table — merges all per-sample coverage files into genes × samples matrix
+rule merge_counts:
+    input:
+        expand(f"{coverage_dir}/{{sample}}.coverage", sample=SAMPLES)
+    output:
+        f"{counts_dir}/count_table.txt"
+    params:
+        module     = config["modules"]["python"],
+        python_bin = config["python_bin"]
+    shell:
+        '''
+        set +u
+        source ~/.bashrc
+        command -v module &>/dev/null && module load {params.module}
+        {params.python_bin} scripts/merge_counts.py {output} {input}
+        '''
+
+# DESeq2 — runs all pairwise comparisons, writes one *_intersect.txt per pair (input for libncker)
+rule deseq2:
+    input:
+        counts   = f"{counts_dir}/count_table.txt",
+        metadata = config["metadata"]
+    output:
+        directory(deseq2_dir)
+    params:
+        module     = config["modules"]["python"],
+        python_bin = config["python_bin"],
+        padj       = config["deseq2"]["padj"],
+        log2fc     = config["deseq2"]["log2fc"],
+        min_counts = config["deseq2"]["min_counts"]
+    shell:
+        '''
+        set +u
+        source ~/.bashrc
+        command -v module &>/dev/null && module load {params.module}
+        mkdir -p {output}
+        {params.python_bin} scripts/deseq2.py \
+            {input.counts} {input.metadata} {output} \
+            {params.padj} {params.log2fc} {params.min_counts}
+        '''
+
+# cleaning
+rule clean:
+    shell:
+        '''
+        rm -rfv {fastqc_dir}
+        rm -rfv {mapped_dir}
+        rm -rfv {stats_dir}
+        rm -rfv {coverage_dir}
+        rm -rfv {counts_dir}
+        rm -rfv {deseq2_dir}
+        '''
