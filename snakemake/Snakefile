@@ -3,6 +3,7 @@ import os
 configfile: "config.yaml"
 
 ALIGNER = config["aligner"]
+LAYOUT  = config.get("layout", "paired")   # "paired" or "single"
 
 # paths — all sourced from config.yaml
 data_dir     = config["paths"]["data_dir"]
@@ -24,11 +25,22 @@ ht2_index_prefix = os.path.join(out, "index_genome_ht2", "genome")
 bt2_index_prefix = os.path.join(out, "index_genome_bt2", "genome")
 
 # sample detection
-SAMPLES = sorted({
-    fn.split("_")[0]
-    for fn in os.listdir(data_dir)
-    if fn.endswith("_1.fastq.gz") or fn.endswith("_2.fastq.gz")
-})
+if LAYOUT == "paired":
+    SAMPLES = sorted({
+        fn.split("_")[0]
+        for fn in os.listdir(data_dir)
+        if fn.endswith("_1.fastq.gz") or fn.endswith("_2.fastq.gz")
+    })
+elif LAYOUT == "single":
+    SAMPLES = sorted({
+        fn[:-len(".fastq.gz")]
+        for fn in os.listdir(data_dir)
+        if fn.endswith(".fastq.gz")
+        and not fn.endswith("_1.fastq.gz")
+        and not fn.endswith("_2.fastq.gz")
+    })
+else:
+    raise ValueError(f"Unknown layout '{LAYOUT}'. Choose: paired, single")
 
 # aligner index configuration
 if ALIGNER == "hisat2":
@@ -48,10 +60,12 @@ else:
 # main
 rule all:
     input:
-        expand(f"{fastqc_dir}/{{sample}}_1_fastqc.html", sample=SAMPLES),
-        expand(f"{fastqc_dir}/{{sample}}_1_fastqc.zip",  sample=SAMPLES),
-        expand(f"{fastqc_dir}/{{sample}}_2_fastqc.html", sample=SAMPLES),
-        expand(f"{fastqc_dir}/{{sample}}_2_fastqc.zip",  sample=SAMPLES),
+        expand(f"{fastqc_dir}/{{sample}}_1_fastqc.html", sample=SAMPLES) if LAYOUT == "paired" else [],
+        expand(f"{fastqc_dir}/{{sample}}_1_fastqc.zip",  sample=SAMPLES) if LAYOUT == "paired" else [],
+        expand(f"{fastqc_dir}/{{sample}}_2_fastqc.html", sample=SAMPLES) if LAYOUT == "paired" else [],
+        expand(f"{fastqc_dir}/{{sample}}_2_fastqc.zip",  sample=SAMPLES) if LAYOUT == "paired" else [],
+        expand(f"{fastqc_dir}/{{sample}}_fastqc.html",   sample=SAMPLES) if LAYOUT == "single" else [],
+        expand(f"{fastqc_dir}/{{sample}}_fastqc.zip",    sample=SAMPLES) if LAYOUT == "single" else [],
         expand(f"{coverage_dir}/{{sample}}.coverage",    sample=SAMPLES),
         expand(f"{stats_dir}/{{sample}}.seqkit",         sample=SAMPLES),
         expand(f"{stats_dir}/{{sample}}.flagstat",       sample=SAMPLES),
@@ -59,93 +73,145 @@ rule all:
         f"{counts_dir}/count_table.txt",
         directory(deseq2_dir)
 
-# check pairs
-rule check_pairs:
-    input:
-        read_1 = f"{data_dir}/{{sample}}_1.fastq.gz",
-        read_2 = f"{data_dir}/{{sample}}_2.fastq.gz"
-    output:
-        seqkit_output = f"{stats_dir}/{{sample}}.seqkit"
-    shell:
-        '''
-        set +u
-        source ~/.bashrc
-        command -v module &>/dev/null && module load programs/seqkit-2.5.1
-        THREADS=${{NSLOTS:-$(nproc)}}
-        seqkit stats -j $THREADS -T {input.read_1} {input.read_2} > {output.seqkit_output}
-        '''
+# ── paired-end only rules ────────────────────────────────────────────────────
 
-rule repair_files:
-    input:
-        read_1        = f"{data_dir}/{{sample}}_1.fastq.gz",
-        read_2        = f"{data_dir}/{{sample}}_2.fastq.gz",
-        seqkit_output = f"{stats_dir}/{{sample}}.seqkit"
-    output:
-        read_1     = f"{synced_dir}/{{sample}}_1.fastq.gz",
-        read_2     = f"{synced_dir}/{{sample}}_2.fastq.gz",
-        singletons = f"{synced_dir}/{{sample}}_singletons.fastq.gz"
-    log:
-        f"{stats_dir}/{{sample}}.sync_pairs.log"
-    shell:
-        '''
-        set +u
-        source ~/.bashrc
-        command -v module &>/dev/null && module load programs/bbmap-38.84
+if LAYOUT == "paired":
 
-        r1c=$(awk 'NR==2{{print $4}}' {input.seqkit_output})
-        r2c=$(awk 'NR==3{{print $4}}' {input.seqkit_output})
+    rule check_pairs:
+        input:
+            read_1 = f"{data_dir}/{{sample}}_1.fastq.gz",
+            read_2 = f"{data_dir}/{{sample}}_2.fastq.gz"
+        output:
+            seqkit_output = f"{stats_dir}/{{sample}}.seqkit"
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load programs/seqkit-2.5.1
+            THREADS=${{NSLOTS:-$(nproc)}}
+            seqkit stats -j $THREADS -T {input.read_1} {input.read_2} > {output.seqkit_output}
+            '''
 
-        if [ "$r1c" != "$r2c" ]; then
-            echo "[sync] {wildcards.sample}: MISMATCH ($r1c vs $r2c) → repair.sh" &>> {log}
-            repair.sh \
-              in1={input.read_1} in2={input.read_2} \
-              out1={output.read_1} out2={output.read_2} \
-              outs={output.singletons} overwrite=t &>> {log}
-        else
-            echo "[sync] {wildcards.sample}: OK ($r1c==$r2c) → symlinks" &>> {log}
-            ln -sf $(realpath {input.read_1}) {output.read_1}
-            ln -sf $(realpath {input.read_2}) {output.read_2}
-            gzip -c </dev/null > {output.singletons}
-        fi
-        '''
+    rule repair_files:
+        input:
+            read_1        = f"{data_dir}/{{sample}}_1.fastq.gz",
+            read_2        = f"{data_dir}/{{sample}}_2.fastq.gz",
+            seqkit_output = f"{stats_dir}/{{sample}}.seqkit"
+        output:
+            read_1     = f"{synced_dir}/{{sample}}_1.fastq.gz",
+            read_2     = f"{synced_dir}/{{sample}}_2.fastq.gz",
+            singletons = f"{synced_dir}/{{sample}}_singletons.fastq.gz"
+        log:
+            f"{stats_dir}/{{sample}}.sync_pairs.log"
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load programs/bbmap-38.84
 
-# quality reports
-rule fastqc:
-    input:
-        read_1 = f"{data_dir}/{{sample}}_1.fastq.gz",
-        read_2 = f"{data_dir}/{{sample}}_2.fastq.gz"
-    output:
-        read_1_html = f"{fastqc_dir}/{{sample}}_1_fastqc.html",
-        read_1_zip  = f"{fastqc_dir}/{{sample}}_1_fastqc.zip",
-        read_2_html = f"{fastqc_dir}/{{sample}}_2_fastqc.html",
-        read_2_zip  = f"{fastqc_dir}/{{sample}}_2_fastqc.zip"
-    params:
-        outdir = fastqc_dir
-    shell:
-        '''
-        set +u
-        source ~/.bashrc
-        command -v module &>/dev/null && module load programs/fastqc-0.12.1
-        fastqc {input.read_1} {input.read_2} --outdir {params.outdir}
-        '''
+            r1c=$(awk 'NR==2{{print $4}}' {input.seqkit_output})
+            r2c=$(awk 'NR==3{{print $4}}' {input.seqkit_output})
 
-rule multiqc:
-    input:
-        expand(f"{fastqc_dir}/{{sample}}_1_fastqc.zip", sample=SAMPLES),
-        expand(f"{fastqc_dir}/{{sample}}_2_fastqc.zip", sample=SAMPLES)
-    output:
-        f"{fastqc_dir}/multiqc_report.html"
-    params:
-        outdir = fastqc_dir
-    shell:
-        '''
-        set +u
-        source ~/.bashrc
-        command -v module &>/dev/null && module load programs/multiqc-1.23
-        multiqc {params.outdir} -o {params.outdir}
-        '''
+            if [ "$r1c" != "$r2c" ]; then
+                echo "[sync] {wildcards.sample}: MISMATCH ($r1c vs $r2c) → repair.sh" &>> {log}
+                repair.sh \
+                  in1={input.read_1} in2={input.read_2} \
+                  out1={output.read_1} out2={output.read_2} \
+                  outs={output.singletons} overwrite=t &>> {log}
+            else
+                echo "[sync] {wildcards.sample}: OK ($r1c==$r2c) → symlinks" &>> {log}
+                ln -sf $(realpath {input.read_1}) {output.read_1}
+                ln -sf $(realpath {input.read_2}) {output.read_2}
+                gzip -c </dev/null > {output.singletons}
+            fi
+            '''
 
-# genome index
+    rule fastqc:
+        input:
+            read_1 = f"{data_dir}/{{sample}}_1.fastq.gz",
+            read_2 = f"{data_dir}/{{sample}}_2.fastq.gz"
+        output:
+            read_1_html = f"{fastqc_dir}/{{sample}}_1_fastqc.html",
+            read_1_zip  = f"{fastqc_dir}/{{sample}}_1_fastqc.zip",
+            read_2_html = f"{fastqc_dir}/{{sample}}_2_fastqc.html",
+            read_2_zip  = f"{fastqc_dir}/{{sample}}_2_fastqc.zip"
+        params:
+            outdir = fastqc_dir
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load programs/fastqc-0.12.1
+            fastqc {input.read_1} {input.read_2} --outdir {params.outdir}
+            '''
+
+    rule multiqc:
+        input:
+            expand(f"{fastqc_dir}/{{sample}}_1_fastqc.zip", sample=SAMPLES),
+            expand(f"{fastqc_dir}/{{sample}}_2_fastqc.zip", sample=SAMPLES)
+        output:
+            f"{fastqc_dir}/multiqc_report.html"
+        params:
+            outdir = fastqc_dir
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load programs/multiqc-1.23
+            multiqc {params.outdir} -o {params.outdir}
+            '''
+
+# ── single-end only rules ────────────────────────────────────────────────────
+
+elif LAYOUT == "single":
+
+    rule check_reads:
+        input:
+            read = f"{data_dir}/{{sample}}.fastq.gz"
+        output:
+            seqkit_output = f"{stats_dir}/{{sample}}.seqkit"
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load programs/seqkit-2.5.1
+            THREADS=${{NSLOTS:-$(nproc)}}
+            seqkit stats -j $THREADS -T {input.read} > {output.seqkit_output}
+            '''
+
+    rule fastqc:
+        input:
+            read = f"{data_dir}/{{sample}}.fastq.gz"
+        output:
+            html = f"{fastqc_dir}/{{sample}}_fastqc.html",
+            zip  = f"{fastqc_dir}/{{sample}}_fastqc.zip"
+        params:
+            outdir = fastqc_dir
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load programs/fastqc-0.12.1
+            fastqc {input.read} --outdir {params.outdir}
+            '''
+
+    rule multiqc:
+        input:
+            expand(f"{fastqc_dir}/{{sample}}_fastqc.zip", sample=SAMPLES)
+        output:
+            f"{fastqc_dir}/multiqc_report.html"
+        params:
+            outdir = fastqc_dir
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load programs/multiqc-1.23
+            multiqc {params.outdir} -o {params.outdir}
+            '''
+
+# ── genome index (layout-independent) ───────────────────────────────────────
+
 if ALIGNER == "hisat2":
     rule build_index:
         input:
@@ -197,8 +263,9 @@ elif ALIGNER == "bwa":
             bwa index {input.fasta}
             '''
 
-# alignment
-if ALIGNER == "hisat2":
+# ── alignment ────────────────────────────────────────────────────────────────
+
+if ALIGNER == "hisat2" and LAYOUT == "paired":
     rule align:
         input:
             read_1 = f"{synced_dir}/{{sample}}_1.fastq.gz",
@@ -224,7 +291,32 @@ if ALIGNER == "hisat2":
                    -S {output.sam}
             '''
 
-elif ALIGNER == "bowtie2":
+elif ALIGNER == "hisat2" and LAYOUT == "single":
+    rule align:
+        input:
+            read = f"{data_dir}/{{sample}}.fastq.gz",
+            idx  = INDEX_FILES
+        output:
+            sam     = temp(f"{mapped_dir}/{{sample}}.sam"),
+            summary = f"{stats_dir}/{{sample}}_alignment_summary.txt",
+            novel   = f"{mapped_dir}/{{sample}}_novel_splicesites.txt"
+        params:
+            prefix = ht2_index_prefix
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load programs/hisat2-2.1.0
+            THREADS=${{NSLOTS:-$(nproc)}}
+            hisat2 -p $THREADS -x {params.prefix} \
+                   -U {input.read} \
+                   --rna-strandness R --dta \
+                   --novel-splicesite-outfile {output.novel} \
+                   --summary-file {output.summary} \
+                   -S {output.sam}
+            '''
+
+elif ALIGNER == "bowtie2" and LAYOUT == "paired":
     rule align:
         input:
             read_1 = f"{synced_dir}/{{sample}}_1.fastq.gz",
@@ -248,7 +340,30 @@ elif ALIGNER == "bowtie2":
                     -S {output.sam}
             '''
 
-elif ALIGNER == "bwa":
+elif ALIGNER == "bowtie2" and LAYOUT == "single":
+    rule align:
+        input:
+            read = f"{data_dir}/{{sample}}.fastq.gz",
+            idx  = INDEX_FILES
+        output:
+            sam     = temp(f"{mapped_dir}/{{sample}}.sam"),
+            summary = f"{stats_dir}/{{sample}}_alignment_summary.txt"
+        params:
+            module = config["modules"]["bowtie2"],
+            prefix = bt2_index_prefix
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load {params.module}
+            THREADS=${{NSLOTS:-$(nproc)}}
+            bowtie2 -p $THREADS -x {params.prefix} \
+                    -U {input.read} \
+                    2> {output.summary} \
+                    -S {output.sam}
+            '''
+
+elif ALIGNER == "bwa" and LAYOUT == "paired":
     rule align:
         input:
             read_1 = f"{synced_dir}/{{sample}}_1.fastq.gz",
@@ -271,6 +386,31 @@ elif ALIGNER == "bwa":
                     > {output.sam} \
                     2> {output.summary}
             '''
+
+elif ALIGNER == "bwa" and LAYOUT == "single":
+    rule align:
+        input:
+            read = f"{data_dir}/{{sample}}.fastq.gz",
+            idx  = INDEX_FILES
+        output:
+            sam     = temp(f"{mapped_dir}/{{sample}}.sam"),
+            summary = f"{stats_dir}/{{sample}}_alignment_summary.txt"
+        params:
+            module = config["modules"]["bwa"],
+            genome = genome_dir
+        shell:
+            '''
+            set +u
+            source ~/.bashrc
+            command -v module &>/dev/null && module load {params.module}
+            THREADS=${{NSLOTS:-$(nproc)}}
+            bwa mem -t $THREADS {params.genome} \
+                    {input.read} \
+                    > {output.sam} \
+                    2> {output.summary}
+            '''
+
+# ── post-alignment (layout-independent) ─────────────────────────────────────
 
 # sam to bam
 rule sam_to_bam:
@@ -348,7 +488,7 @@ rule merge_counts:
         {params.python_bin} scripts/merge_counts.py {output} {input}
         '''
 
-# DESeq2 — runs all pairwise comparisons, writes one *_intersect.txt per pair (input for libncker)
+# DESeq2 — runs all pairwise comparisons, writes one *_intersect.txt per pair
 rule deseq2:
     input:
         counts   = f"{counts_dir}/count_table.txt",

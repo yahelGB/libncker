@@ -1,9 +1,14 @@
 # Aligner selection: hisat2, bowtie2, or bwa
 aligner: "bowtie2"
 
+# Read layout: paired or single
+# paired — expects {sample}_1.fastq.gz / {sample}_2.fastq.gz
+# single — expects {sample}.fastq.gz
+layout: "paired"
+
 # --- Paths ---
 paths:
-  data_dir:    "raw_data"       # directory containing {sample}_1.fastq.gz / {sample}_2.fastq.gz
+  data_dir:    "raw_data"       # directory containing FASTQs (see layout above)
   output_dir:  "results"        # all pipeline outputs will be written here
   genome:      "GCF_003789085.1_ASM378908v1_rna.fna"               # path to reference genome FASTA (.fna / .fa)
   annotation:  "GCF_003789085.1_ASM378908v1_genomic.gff"               # optional: path to annotation GTF; leave empty if not available

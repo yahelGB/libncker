@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a general-purpose Snakemake workflow for paired-end RNA-seq processing and differential expression analysis. It takes raw FASTQ files and produces pairwise DEG (Differentially Expressed Genes) results that can be used for any downstream analysis — including as direct input for libncker's `exclusive` and `neighbors` modules. Designed to run on an SGE (Sun Grid Engine) HPC cluster with environment modules, but also works locally.
+This is a general-purpose Snakemake workflow for RNA-seq processing and differential expression analysis. It supports both **paired-end** and **single-end** reads, takes raw FASTQ files, and produces pairwise DEG (Differentially Expressed Genes) results that can be used for any downstream analysis — including as direct input for libncker's `exclusive` and `neighbors` modules. Designed to run on an SGE (Sun Grid Engine) HPC cluster with environment modules, but also works locally.
 
 ## Local Development Setup
 
@@ -45,7 +45,8 @@ snakemake clean
 | Key | Purpose |
 |---|---|
 | `aligner` | Aligner to use: `hisat2`, `bowtie2`, or `bwa` |
-| `paths.data_dir` | Directory containing raw FASTQs (`{sample}_1.fastq.gz`) |
+| `layout` | Read layout: `paired` (default) or `single` |
+| `paths.data_dir` | Directory containing raw FASTQs — paired: `{sample}_1.fastq.gz`/`{sample}_2.fastq.gz`; single: `{sample}.fastq.gz` |
 | `paths.output_dir` | Root output directory — all subdirs are created automatically |
 | `paths.genome` | Path to reference genome FASTA |
 | `paths.annotation` | Optional path to annotation GTF; leave empty if not available |
@@ -60,22 +61,27 @@ snakemake clean
 
 ## Pipeline Architecture
 
-The workflow processes paired-end FASTQ files through these stages (in dependency order):
+The workflow processes FASTQ files through these stages (in dependency order):
 
-1. **check_pairs** — `seqkit stats` on raw reads to detect R1/R2 count mismatches
-2. **repair_files** — if counts differ, runs `bbmap repair.sh`; otherwise creates symlinks
-3. **fastqc** — per-sample QC on raw reads (runs independently of repair)
-4. **multiqc** — aggregates all FastQC ZIP reports
-5. **build_index** — builds aligner index on the reference genome (one-time)
-6. **align** — splice-aware or standard alignment; outputs a temp SAM + alignment summary
-7. **sam_to_bam** — `samtools view` (temp BAM)
-8. **sort_bam** — `samtools sort` → `{sample}.sorted.bam`
-9. **flagstat** — `samtools flagstat` on sorted BAM
-10. **coverage** — `samtools coverage` per-contig: extracts columns `rname` + `numreads`
-11. **merge_counts** — `scripts/merge_counts.py` merges all `.coverage` files into a genes × samples count table
-12. **deseq2** *(optional)* — `scripts/deseq2.py` runs all pairwise DESeq2 comparisons; produces one `<condAvscondB>_intersect.txt` per pair (libncker input), full results, normalized counts, and MA plots
+1. **check_pairs** *(paired only)* — `seqkit stats` to detect R1/R2 count mismatches
+2. **repair_files** *(paired only)* — if counts differ, runs `bbmap repair.sh`; otherwise creates symlinks
+3. **check_reads** *(single only)* — `seqkit stats` on the single read file
+4. **fastqc** — per-sample QC; paired runs on R1+R2, single on the one file
+5. **multiqc** — aggregates all FastQC ZIP reports
+6. **build_index** — builds aligner index on the reference genome (one-time)
+7. **align** — splice-aware or standard alignment; outputs a temp SAM + alignment summary
+8. **sam_to_bam** — `samtools view` (temp BAM)
+9. **sort_bam** — `samtools sort` → `{sample}.sorted.bam`
+10. **flagstat** — `samtools flagstat` on sorted BAM
+11. **coverage** — `samtools coverage` per-contig: extracts columns `rname` + `numreads`
+12. **merge_counts** — `scripts/merge_counts.py` merges all `.coverage` files into a genes × samples count table
+13. **deseq2** — `scripts/deseq2.py` runs all pairwise DESeq2 comparisons; produces one `<condAvscondB>_intersect.txt` per pair, full results, normalized counts, and MA plots
 
 Intermediate SAM and unsorted BAM files are marked `temp()` and deleted automatically after downstream rules complete.
+
+### Layout differences
+- **Paired-end:** reads go through `repair_files` (sync/repair step) before alignment; aligned with `-1`/`-2` flags
+- **Single-end:** no repair step; reads aligned directly from `data_dir` with `-U` flag (hisat2/bowtie2) or as a single positional arg (bwa); hisat2 strandness changes from `RF` to `R`
 
 ### Aligner notes
 - **hisat2** — splice-aware (recommended for RNA-seq); also outputs novel splice sites
@@ -84,7 +90,7 @@ Intermediate SAM and unsorted BAM files are marked `temp()` and deleted automati
 
 All output subdirectories (`fastqc_reports/`, `processed_bams/`, `stats/`, `coverage/`, `counts/`, `deseq2/`) are created automatically under `paths.output_dir`. Index prefixes are also placed there.
 
-Samples are auto-detected from filenames in `paths.data_dir` matching `{sample}_1.fastq.gz` / `{sample}_2.fastq.gz`.
+Sample names are auto-detected from filenames in `paths.data_dir`: paired matches `{sample}_1.fastq.gz` / `{sample}_2.fastq.gz`; single matches `{sample}.fastq.gz` (files ending in `_1.fastq.gz` or `_2.fastq.gz` are excluded from single detection).
 
 ## Cluster Configuration (`cluster.json`)
 
