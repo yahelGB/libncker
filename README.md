@@ -231,7 +231,23 @@ The pipeline is useful for any DEG analysis. When used upstream of libncker, the
 
 Supported aligners: `hisat2` (splice-aware, recommended for RNA-seq), `bowtie2`, `bwa`. Designed for SGE HPC clusters with environment modules, but also runs locally.
 
-See [`snakemake/CLAUDE.md`](snakemake/CLAUDE.md) for full configuration, usage, and cluster setup details.
+### Setup (required before first run)
+
+```bash
+cd snakemake/
+python3 -m venv .venv
+source .venv/bin/activate
+pip install pandas numpy matplotlib pydeseq2
+```
+
+### Run
+
+```bash
+# edit config.yaml first (paths, aligner, layout, metadata)
+snakemake --cores <N>
+```
+
+See [`snakemake/CLAUDE.md`](snakemake/CLAUDE.md) for full configuration, cluster setup, and all available options.
 
 ---
 
