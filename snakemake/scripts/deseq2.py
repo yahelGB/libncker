@@ -1,5 +1,5 @@
 """
-deseq2.py — run all pairwise DESeq2 comparisons and produce libncker-compatible intersect tables.
+deseq2.py — run all pairwise DESeq2 comparisons and produce libncker-compatible results tables.
 
 Usage:
     python deseq2.py <count_table.txt> <metadata.csv> <output_dir> <padj> <log2fc> <min_counts>
@@ -12,17 +12,20 @@ Inputs:
     min_counts      — minimum total counts across samples to retain a gene (e.g. 10)
 
 Outputs per pairwise comparison (condA vs condB) written to output_dir:
-    <condAvscondB>_intersect.txt        — ID + Expression columns (input for libncker)
-    <condAvscondB>_results.txt          — full DESeq2 results sorted by padj
+    <condAvscondB>_results.txt          — full DESeq2 results sorted by padj, with an
+                                          Expression column appended (input for libncker);
+                                          only significant genes get a label, others blank
     <condAvscondB>_normalized_counts.txt — size-factor normalized counts for that pair
     <condAvscondB>_MA_plot.pdf          — MA plot
 
 One shared output:
     PCA_plot.pdf                        — PCA on all samples (log1p raw counts)
 
-Expression column format (IDEAMEX-compatible):
+Expression column format (IDEAMEX-compatible), set on significant genes only
+(padj < cutoff AND |log2FC| >= cutoff); non-significant rows are left blank:
     Up_<condA>_Down_<condB>  when LFC > 0  (condA is higher)
     Down_<condA>_Up_<condB>  when LFC < 0  (condB is higher)
+libncker reads the ID/Expression columns by header name and skips blank rows.
 """
 
 import sys
@@ -109,7 +112,26 @@ for cond_a, cond_b in pairs:
     results = stat_res.results_df.sort_values("padj", na_position="last")
     results.index.name = "ID"
 
-    # full results
+    # --- Expression label (IDEAMEX-compatible) for libncker ---
+    # Significant genes only; non-significant rows stay blank. The column is appended
+    # to the full results table, which becomes the single libncker input.
+    sig_mask = (
+        results["padj"].notna() &
+        (results["padj"] < padj_cutoff) &
+        (results["log2FoldChange"].abs() >= lfc_cutoff)
+    )
+
+    def _expression_label(lfc):
+        if lfc > 0:
+            return f"Up_{cond_a}_Down_{cond_b}"
+        return f"Down_{cond_a}_Up_{cond_b}"
+
+    results["Expression"] = ""
+    results.loc[sig_mask, "Expression"] = (
+        results.loc[sig_mask, "log2FoldChange"].apply(_expression_label)
+    )
+
+    # full results (now the single libncker input: ID + DESeq2 columns + Expression)
     results.to_csv(os.path.join(output_dir, f"{tag}_results.txt"), sep="\t")
 
     # normalized counts for this pair (genes x samples)
@@ -138,25 +160,8 @@ for cond_a, cond_b in pairs:
     plt.savefig(os.path.join(output_dir, f"{tag}_MA_plot.pdf"))
     plt.close()
 
-    # --- intersect table for libncker ---
-    sig_mask = (
-        results["padj"].notna() &
-        (results["padj"] < padj_cutoff) &
-        (results["log2FoldChange"].abs() >= lfc_cutoff)
-    )
-    sig_res = results[sig_mask].copy()
-
-    def _expression_label(lfc):
-        if lfc > 0:
-            return f"Up_{cond_a}_Down_{cond_b}"
-        return f"Down_{cond_a}_Up_{cond_b}"
-
-    sig_res["Expression"] = sig_res["log2FoldChange"].apply(_expression_label)
-
-    intersect = sig_res[["Expression"]].sort_index()
-    intersect.index.name = "ID"
-    intersect.to_csv(os.path.join(output_dir, f"{tag}_intersect.txt"), sep="\t")
-
+    # --- significance summary for libncker Expression labels ---
+    sig_res = results[sig_mask]
     n_up = int((sig_res["log2FoldChange"] > 0).sum())
     n_dn = int((sig_res["log2FoldChange"] < 0).sum())
     print(f"  Significant (padj<{padj_cutoff}, |log2FC|>={lfc_cutoff}): {len(sig_res)}")

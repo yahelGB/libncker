@@ -488,7 +488,7 @@ rule merge_counts:
         {params.python_bin} scripts/merge_counts.py {output} {input}
         '''
 
-# DESeq2 — runs all pairwise comparisons, writes one *_intersect.txt per pair
+# DESeq2 — runs all pairwise comparisons, appends an Expression column to each *_results.txt
 rule deseq2:
     input:
         counts   = f"{counts_dir}/count_table.txt",
