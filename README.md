@@ -1,6 +1,6 @@
-# libncker
+# lncker
 
-Libncker is a lightweight CLI to:
+Lncker is a lightweight CLI to:
 1) identify tissue-exclusive lncRNAs from differential expression intersect tables,
 2) compute a cis-neighborhood report (K nearest mRNAs) plus a simple `cis_score`,
 3) summarize intergenic or intron-length distributions with geometric means, and
@@ -40,27 +40,27 @@ In that case, please install using a virtual environment or ensure python3-full 
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install -U pip
-python3 -m pip install "git+https://github.com/yahelgb/libncker.git"
-libncker -h
+python3 -m pip install "git+https://github.com/yahelgb/lncker.git"
+lncker -h
 ```
 ### Option B: local clone
 ```bash
-git clone https://github.com/yahelgb/libncker.git
-cd libncker
+git clone https://github.com/yahelgb/lncker.git
+cd lncker
 python3 -m pip install .
-libncker -h
+lncker -h
 ```
 ### Option C: user install (no venv)
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
-python3 -m pip install --user "git+https://github.com/yahelgb/libncker.git"
-which libncker
-libncker -h
+python3 -m pip install --user "git+https://github.com/yahelgb/lncker.git"
+which lncker
+lncker -h
 ```
 ### Option D: run without PATH
 ```bash
-python3 -m pip install --user "git+https://github.com/yahelgb/libncker.git"
-python3 -m libncker -h
+python3 -m pip install --user "git+https://github.com/yahelgb/lncker.git"
+python3 -m lncker -h
 ```
 ---
 
@@ -68,7 +68,7 @@ python3 -m libncker -h
 
 ### Full pipeline (recommended: transcript IDs)
 ```bash
-libncker run \
+lncker run \
   --gff /path/to/genome.gff \
   --lnc-ids-from-gff \
   --level transcript \
@@ -80,7 +80,7 @@ libncker run \
 
 ### Full pipeline (gene IDs)
 ```bash
-libncker run \
+lncker run \
   --gff /path/to/genome.gff \
   --lnc-ids-from-gff \
   --level gene \
@@ -97,7 +97,7 @@ Compressed `.gff.gz` inputs are supported directly.
 
 ### 1) Extract lncRNA IDs from GFF
 ```bash
-libncker extract-ids \
+lncker extract-ids \
   --gff /path/to/genome.gff \
   --level transcript \
   --out lncRNA_IDs.txt \
@@ -105,7 +105,7 @@ libncker extract-ids \
 ```
 ### 2) Compute tissue-exclusive lncRNAs from intersect tables
 ```bash
-libncker exclusive \
+lncker exclusive \
   --lnc-ids lncRNA_IDs.txt \
   --level transcript \
   --intersects /path/to/*_intersect.txt \
@@ -114,7 +114,7 @@ libncker exclusive \
 ```
 Lenient mode (for incomplete pairwise sets or large N):
 ```bash
-libncker exclusive \
+lncker exclusive \
   --lnc-ids lncRNA_IDs.txt \
   --level transcript \
   --intersects /path/to/*_intersect.txt \
@@ -124,7 +124,7 @@ libncker exclusive \
 ```
 ### 3) Compute neighbors + cis module output
 ```bash
-libncker neighbors \
+lncker neighbors \
   --gff /path/to/genome.gff \
   --level transcript \
   --exclusive results/*_exclusive_lncRNAs_strict.txt \
@@ -134,7 +134,7 @@ libncker neighbors \
 ```
 ### 4) Run everything end-to-end
 ```bash
-libncker run \
+lncker run \
   --gff /path/to/genome.gff \
   --lnc-ids-from-gff \
   --level transcript \
@@ -150,14 +150,14 @@ This now also writes:
 
 ### 5) Summarize intergenic distances from a GFF
 ```bash
-libncker intergenic-stats \
+lncker intergenic-stats \
   --gff /path/to/genome.gff.gz \
   --summary results/intergenic.summary.tsv \
   --distances-out results/intergenic.distances.tsv
 ```
 ### 6) Summarize intron lengths from a TSV column
 ```bash
-libncker intron-stats \
+lncker intron-stats \
   --tsv /path/to/introns.tsv \
   --column-index 8 \
   --summary results/intron.summary.tsv
@@ -169,14 +169,14 @@ differentially expressed (`DE_status == DE`) mRNAs, and fetches the NCBI gene su
 for each one. Produces one TSV per tissue.
 
 ```bash
-libncker annotate \
+lncker annotate \
   --cis-dir results/ \
   --outdir results/annotations/
 ```
 
 With an NCBI API key (raises rate limit from 3 to 10 requests/sec):
 ```bash
-libncker annotate \
+lncker annotate \
   --cis-dir results/ \
   --outdir results/annotations/ \
   --ncbi-api-key YOUR_KEY
@@ -185,7 +185,7 @@ libncker annotate \
 By default only first neighbors (`1_U` and `1_D`) are annotated, matching the intergenic
 distance analysis. To include farther positions:
 ```bash
-libncker annotate \
+lncker annotate \
   --cis-dir results/ \
   --outdir results/annotations/ \
   --positions 1_U,1_D,2_U,2_D
@@ -198,14 +198,14 @@ GO terms from NCBI Gene XML will be empty. Use `--emapper` to submit protein seq
 the [eggNOG-mapper](http://eggnog-mapper.embl.de) web server and retrieve proper GO terms:
 
 ```bash
-libncker annotate \
+lncker annotate \
   --cis-dir results/ \
   --outdir results/annotations/ \
   --gff /path/to/genome.gff \
   --emapper
 ```
 
-- `--gff` is optional but recommended: libncker reads the assembly accession from the GFF
+- `--gff` is optional but recommended: lncker reads the assembly accession from the GFF
   header, queries NCBI Taxonomy, and automatically selects the closest available eggNOG
   taxonomic scope (e.g. *Arthropoda* for shrimp).
 - Without `--gff`, the scope defaults to *Arthropoda*.
@@ -227,7 +227,7 @@ The `snakemake/` directory contains a general-purpose paired-end RNA-seq pipelin
 
 **QC → alignment → count merging → pairwise DESeq2**
 
-The pipeline is useful for any DEG analysis. When used upstream of libncker, the `*_intersect.txt` files produced by the `deseq2` rule are the direct input for `libncker exclusive` and `libncker neighbors`.
+The pipeline is useful for any DEG analysis. When used upstream of lncker, the `*_intersect.txt` files produced by the `deseq2` rule are the direct input for `lncker exclusive` and `lncker neighbors`.
 
 Supported aligners: `hisat2` (splice-aware, recommended for RNA-seq), `bowtie2`, `bwa`. Designed for SGE HPC clusters with environment modules, but also runs locally.
 
@@ -260,7 +260,7 @@ Each file should include:
   - `Up_<tissueA>_Down_<tissueB>`
   - `Down_<tissueA>_Up_<tissueB>`
 
-Libncker infers tissue names from those labels and auto-detects the relevant columns.
+Lncker infers tissue names from those labels and auto-detects the relevant columns.
 
 ### GFF (.gff/.gff3)
 

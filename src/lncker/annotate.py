@@ -207,7 +207,7 @@ def run_annotate(
         # Optional: run eggNOG-mapper once per tissue for all mRNAs (batch)
         emapper_go: dict[str, dict[str, list[str]]] = {}
         if use_emapper:
-            from libncker.emapper import run_emapper_annotation
+            from lncker.emapper import run_emapper_annotation
             print(f"  Running eggNOG-mapper for {len(records)} mRNAs…")
             emapper_go = run_emapper_annotation(
                 mrna_ids=[r.mRNA_ID for r in records],

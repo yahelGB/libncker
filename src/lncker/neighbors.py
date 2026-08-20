@@ -6,9 +6,9 @@ from pathlib import Path
 from typing import Dict, Iterator, List, Set, Tuple
 from urllib.parse import unquote
 
-from libncker.expr import parse_expression
-from libncker.gff_utils import build_lnc_gene_to_transcripts, norm_rna_id, parse_attrs
-from libncker.io_utils import iter_tsv_rows, open_text
+from lncker.expr import parse_expression
+from lncker.gff_utils import build_lnc_gene_to_transcripts, norm_rna_id, parse_attrs
+from lncker.io_utils import iter_tsv_rows, open_text
 
 
 @dataclass(frozen=True)

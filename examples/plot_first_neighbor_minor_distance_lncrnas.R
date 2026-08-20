@@ -15,8 +15,8 @@ suppressPackageStartupMessages({
 # -----------------------------
 # Paths
 # -----------------------------
-gff_path <- "/Users/yahelgb/Desktop/projects/libncker/examples/data_test/GCF_003789085.1_ASM378908v1_genomic.gff"
-output_dir <- "/Users/yahelgb/Desktop/projects/libncker/examples/output_test"
+gff_path <- "/Users/yahelgb/Desktop/projects/lncker/examples/data_test/GCF_003789085.1_ASM378908v1_genomic.gff"
+output_dir <- "/Users/yahelgb/Desktop/projects/lncker/examples/output_test"
 
 out_plot_lnc <- file.path(output_dir, "cis_score3_first_neighbor_lncRNA_distances_vs_gmean.png")
 out_plot_rows <- file.path(output_dir, "cis_score3_first_neighbor_all_rows_vs_gmean.png")

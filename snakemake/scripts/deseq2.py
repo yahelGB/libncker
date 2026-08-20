@@ -1,5 +1,5 @@
 """
-deseq2.py — run all pairwise DESeq2 comparisons and produce libncker-compatible intersect tables.
+deseq2.py — run all pairwise DESeq2 comparisons and produce lncker-compatible intersect tables.
 
 Usage:
     python deseq2.py <count_table.txt> <metadata.csv> <output_dir> <padj> <log2fc> <min_counts>
@@ -12,7 +12,7 @@ Inputs:
     min_counts      — minimum total counts across samples to retain a gene (e.g. 10)
 
 Outputs per pairwise comparison (condA vs condB) written to output_dir:
-    <condAvscondB>_intersect.txt        — ID + Expression columns (input for libncker)
+    <condAvscondB>_intersect.txt        — ID + Expression columns (input for lncker)
     <condAvscondB>_results.txt          — full DESeq2 results sorted by padj
     <condAvscondB>_normalized_counts.txt — size-factor normalized counts for that pair
     <condAvscondB>_MA_plot.pdf          — MA plot
@@ -138,7 +138,7 @@ for cond_a, cond_b in pairs:
     plt.savefig(os.path.join(output_dir, f"{tag}_MA_plot.pdf"))
     plt.close()
 
-    # --- intersect table for libncker ---
+    # --- intersect table for lncker ---
     sig_mask = (
         results["padj"].notna() &
         (results["padj"] < padj_cutoff) &

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a general-purpose Snakemake workflow for RNA-seq processing and differential expression analysis. It supports both **paired-end** and **single-end** reads, takes raw FASTQ files, and produces pairwise DEG (Differentially Expressed Genes) results that can be used for any downstream analysis — including as direct input for libncker's `exclusive` and `neighbors` modules. Designed to run on an SGE (Sun Grid Engine) HPC cluster with environment modules, but also works locally.
+This is a general-purpose Snakemake workflow for RNA-seq processing and differential expression analysis. It supports both **paired-end** and **single-end** reads, takes raw FASTQ files, and produces pairwise DEG (Differentially Expressed Genes) results that can be used for any downstream analysis — including as direct input for lncker's `exclusive` and `neighbors` modules. Designed to run on an SGE (Sun Grid Engine) HPC cluster with environment modules, but also works locally.
 
 ## Local Development Setup
 
@@ -125,7 +125,7 @@ Modules used on HPC: `seqkit-2.5.1`, `bbmap-38.84`, `hisat2-2.1.0`, `fastqc-0.12
 | Script | Language | Purpose |
 |---|---|---|
 | `scripts/merge_counts.py` | Python | Reads all `{sample}.coverage` files, merges into a tab-separated genes × samples count table. Skips the `#rname` header line, fills missing values with 0, drops all-zero rows. |
-| `scripts/deseq2.py` | Python | Detects all conditions from metadata, runs PyDESeq2 for every pairwise combination. Per pair outputs: `<condAvscondB>_intersect.txt` (ID + Expression, sorted by ID — libncker input), full results, normalized counts, MA plot. One shared PCA plot (all samples, log1p raw counts). Thresholds (padj, log2fc, min_counts) passed as CLI args from Snakemake params. |
+| `scripts/deseq2.py` | Python | Detects all conditions from metadata, runs PyDESeq2 for every pairwise combination. Per pair outputs: `<condAvscondB>_intersect.txt` (ID + Expression, sorted by ID — lncker input), full results, normalized counts, MA plot. One shared PCA plot (all samples, log1p raw counts). Thresholds (padj, log2fc, min_counts) passed as CLI args from Snakemake params. |
 
 ## DESeq2 Metadata Format
 

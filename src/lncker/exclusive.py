@@ -4,9 +4,9 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Optional
 
-from libncker.expr import parse_expression
-from libncker.gff_utils import build_transcript_to_gene_map
-from libncker.io_utils import detect_id_and_expression_columns, iter_tsv_rows, read_ids_one_per_line
+from lncker.expr import parse_expression
+from lncker.gff_utils import build_transcript_to_gene_map
+from lncker.io_utils import detect_id_and_expression_columns, iter_tsv_rows, read_ids_one_per_line
 
 
 def _prefix(x: str) -> str:

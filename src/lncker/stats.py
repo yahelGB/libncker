@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, List
 
-from libncker.gff_utils import iter_gff, norm_rna_id
-from libncker.io_utils import iter_tsv_rows
+from lncker.gff_utils import iter_gff, norm_rna_id
+from lncker.io_utils import iter_tsv_rows
 
 
 def geometric_mean(values: Iterable[float]) -> float:

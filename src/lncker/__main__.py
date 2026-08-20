@@ -3,15 +3,15 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from libncker.annotate import run_annotate
-from libncker.exclusive import run_exclusive
-from libncker.gff_utils import extract_lncrna_ids_from_gff, write_extract_ids_summary
-from libncker.neighbors import run_neighbors
-from libncker.stats import run_intergenic_stats, run_intron_stats
+from lncker.annotate import run_annotate
+from lncker.exclusive import run_exclusive
+from lncker.gff_utils import extract_lncrna_ids_from_gff, write_extract_ids_summary
+from lncker.neighbors import run_neighbors
+from lncker.stats import run_intergenic_stats, run_intron_stats
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="libncker", description="Libncker CLI")
+    p = argparse.ArgumentParser(prog="lncker", description="Lncker CLI")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     # exclusive

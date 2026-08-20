@@ -15,8 +15,8 @@ suppressPackageStartupMessages({
 # -----------------------------
 # Paths and parameters
 # -----------------------------
-gff_path <- "/Users/yahelgb/Desktop/projects/libncker/examples/data_test/GCF_003789085.1_ASM378908v1_genomic.gff"
-output_dir <- "/Users/yahelgb/Desktop/projects/libncker/examples/output_test"
+gff_path <- "/Users/yahelgb/Desktop/projects/lncker/examples/data_test/GCF_003789085.1_ASM378908v1_genomic.gff"
+output_dir <- "/Users/yahelgb/Desktop/projects/lncker/examples/output_test"
 
 cis_score_target <- 3
 selected_tolerance <- 0.10

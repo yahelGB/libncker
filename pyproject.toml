@@ -3,7 +3,7 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "libncker"
+name = "lncker"
 version = "0.1.0"
 description = "Tissue-specific lncRNA discovery and cis-neighborhood scoring from RNA-seq differential expression analysis."
 readme = "README.md"
@@ -13,7 +13,7 @@ authors = [{ name = "Yahel Godinez", email = "yahel.godinez@ibt.unam.mx" }]
 dependencies = []
 
 [project.scripts]
-libncker = "libncker.__main__:main"
+lncker = "lncker.__main__:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

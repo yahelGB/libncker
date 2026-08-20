@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterator, Set, Tuple
 
-from libncker.io_utils import open_text
+from lncker.io_utils import open_text
 
 
 @dataclass(frozen=True)
