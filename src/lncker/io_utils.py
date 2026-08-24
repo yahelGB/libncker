@@ -12,10 +12,20 @@ def open_text(path: Path) -> IO[str]:
     return path.open("r", encoding="utf-8", errors="replace")
 
 
+COMMENT_PREFIX = "#"
+
+
+def is_comment(line: str) -> bool:
+    """Provenance headers are '#' comment lines; they are never data."""
+    return line.startswith(COMMENT_PREFIX)
+
+
 def read_ids_one_per_line(path: Path) -> set[str]:
     ids: set[str] = set()
     with open_text(path) as f:
         for line in f:
+            if is_comment(line):
+                continue
             s = line.strip()
             if not s:
                 continue
@@ -28,6 +38,8 @@ def read_ids_one_per_line(path: Path) -> set[str]:
 def iter_tsv_rows(path: Path) -> Iterator[list[str]]:
     with open_text(path) as f:
         for line in f:
+            if is_comment(line):
+                continue
             line = line.rstrip("\n")
             if not line:
                 continue

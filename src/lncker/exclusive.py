@@ -7,6 +7,7 @@ from typing import Optional
 from lncker.expr import parse_expression
 from lncker.gff_utils import build_transcript_to_gene_map
 from lncker.io_utils import detect_id_and_expression_columns, iter_tsv_rows, read_ids_one_per_line
+from lncker.provenance import Provenance
 
 
 def _prefix(x: str) -> str:
@@ -25,6 +26,7 @@ def run_exclusive(
     min_required: int | None = None,
     level: str = "transcript",
     gff: Optional[Path] = None,
+    prov: Optional[Provenance] = None,
 ) -> None:
     """
     Computes tissue-exclusive lncRNAs from intersect tables.
@@ -170,10 +172,14 @@ def run_exclusive(
                 exclusives[up_t].append(resolved_id)
 
     # write outputs
+    exclusive_counts: dict[str, int] = {}
     for t, ids in exclusives.items():
         ids_sorted = sorted(set(ids))
+        exclusive_counts[t] = len(ids_sorted)
         out = outdir / f"{t}_exclusive_lncRNAs_{mode}.txt"
         with out.open("w", encoding="utf-8") as f:
+            if prov is not None:
+                prov.write_header(f)
             for x in ids_sorted:
                 f.write(x + "\n")
 
@@ -182,12 +188,16 @@ def run_exclusive(
             ids_sorted = sorted(set(ids))
             out = outdir / f"{t}_up_consistent_but_incomplete.txt"
             with out.open("w", encoding="utf-8") as f:
+                if prov is not None:
+                    prov.write_header(f)
                 for x in ids_sorted:
                     f.write(x + "\n")
 
     # summary
     summary_path = outdir / "summary.tsv"
     with summary_path.open("w", encoding="utf-8") as s:
+        if prov is not None:
+            prov.write_header(s)
         s.write("key\tvalue\n")
         s.write(f"exclusive_level\t{level}\n")
         s.write(f"lncrna_ids_count\t{len(lncs)}\n")
@@ -206,9 +216,4 @@ def run_exclusive(
         s.write(f"required_patterns_used\t{required}\n")
         s.write(f"ids_mixed_up_direction\t{mixed_ids}\n")
         for t in sorted(tissues):
-            out = outdir / f"{t}_exclusive_lncRNAs_{mode}.txt"
-            try:
-                n = sum(1 for _ in out.open("r", encoding="utf-8"))
-            except FileNotFoundError:
-                n = 0
-            s.write(f"exclusive_count_{t}\t{n}\n")
+            s.write(f"exclusive_count_{t}\t{exclusive_counts.get(t, 0)}\n")

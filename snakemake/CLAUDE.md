@@ -18,6 +18,36 @@ pip install pandas numpy matplotlib pydeseq2
 
 Activate it before running any script locally: `source snakemake/.venv/bin/activate`
 
+## Invariants worth knowing before editing
+
+- **`workdir: WORKFLOW_DIR`** is set at the top of the Snakefile, so every path in
+  `config.yaml` stays relative and resolves against the Snakefile's directory.
+  `snakemake -s /path/to/Snakefile` therefore behaves identically from any cwd,
+  and relative targets (`snakemake results/stats/X.seqkit`) still work.
+- **`wildcard_constraints: sample`** is pinned to the detected sample list. Without
+  it `{sample}` matches greedily and Snakemake can derive `{sample}.sorted.bam`
+  from `sam_to_bam` with `sample="X.sorted"`, producing an endless
+  `.sorted.sorted...` chain. The practical symptom was that *any* real error
+  (a missing genome FASTA, say) got reported as a missing
+  `raw_data/SRR…​.sorted_1.fastq.gz` instead.
+- **`deseq2` declares its real outputs** (`{pair}_intersect.txt`, `_results.txt`,
+  `_normalized_counts.txt`, `_MA_plot.pdf`, `PCA_plot.pdf`) rather than a single
+  `directory()`. `PAIRS` is derived from `metadata.csv` and must stay in sync with
+  `itertools.combinations(sorted(conditions), 2)` in `scripts/deseq2.py`.
+- **Both scripts are declared as rule inputs**, so editing them retriggers.
+- **Parse-time guards** fail with a boxed, actionable message (not a traceback)
+  for: missing `data_dir`, no FASTQs, a half-present pair, a FASTQ sample absent
+  from `metadata.csv`, fewer than two conditions, a missing `metadata.csv`, a
+  missing config key, and a `python_bin` that does not exist.
+- **`seqkit stats` exits 0 on an unreadable FASTQ**, writing a header-only table.
+  `check_pairs`/`check_reads` assert the expected row count, and `repair_files`
+  refuses non-numeric counts — otherwise corrupt reads were symlinked through as
+  "pairs already match".
+- Snakemake runs shell blocks with `errexit`/`nounset`/`pipefail` and deletes the
+  outputs of a failed job, so `set +u` is safe and pipes are already guarded. The
+  `command -v module &>/dev/null && module load …` idiom is *not* fatal under
+  `set -e` (the failing left operand of an `&&` list is exempt).
+
 ## Running the Workflow
 
 ```bash
@@ -73,8 +103,8 @@ The workflow processes FASTQ files through these stages (in dependency order):
 8. **sam_to_bam** — `samtools view` (temp BAM)
 9. **sort_bam** — `samtools sort` → `{sample}.sorted.bam`
 10. **flagstat** — `samtools flagstat` on sorted BAM
-11. **coverage** — `samtools coverage` per-contig: extracts columns `rname` + `numreads`
-12. **merge_counts** — `scripts/merge_counts.py` merges all `.coverage` files into a genes × samples count table
+11. **coverage** — `samtools coverage` per *reference sequence*: extracts `rname` + `numreads`. Because `paths.genome` points at the RefSeq `*_rna.fna` **transcript** FASTA, one reference is one transcript, so these are transcript-level counts — which is what lncker's `--level transcript` expects. Pointing `paths.genome` at a genomic FASTA would silently yield per-scaffold counts instead.
+12. **merge_counts** — `scripts/merge_counts.py` merges all `.coverage` files into a **transcripts** × samples count table
 13. **deseq2** — `scripts/deseq2.py` runs all pairwise DESeq2 comparisons; produces one `<condAvscondB>_intersect.txt` per pair, full results, normalized counts, and MA plots
 
 Intermediate SAM and unsorted BAM files are marked `temp()` and deleted automatically after downstream rules complete.

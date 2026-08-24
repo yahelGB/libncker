@@ -1,5 +1,23 @@
+# lncker provenance
+# tool_version: 0.1.0
+# git_sha: bb2cd36-dirty
+# command: run
+# timestamp_utc: 2026-08-24T17:52:15Z
+# rng_seed: 0 (lncker is deterministic; no RNG is used)
+# python: 3.12.3
+# cwd: /tatooine/project_lncker/lncker
+# argv: /tatooine/project_lncker/lncker/src/lncker/__main__.py run --gff GCF_003789085.1_ASM378908v1_genomic.gff --lnc-ids-from-gff --level gene --intersects examples/data_test/hemocytesvsgills_intersect.txt examples/data_test/hepvsgills_intersect.txt examples/data_test/hepvshemocytes_intersect.txt examples/data_test/musclevsgills_intersect.txt examples/data_test/musclevshemocytes_intersect.txt examples/data_test/musclevshep_intersect.txt --outdir examples/output_test --mode strict --k 5
+# params: gff=GCF_003789085.1_ASM378908v1_genomic.gff intersects=['examples/data_test/hemocytesvsgills_intersect.txt', 'examples/data_test/hepvsgills_intersect.txt', 'examples/data_test/hepvshemocytes_intersect.txt', 'examples/data_test/musclevsgills_intersect.txt', 'examples/data_test/musclevshemocytes_intersect.txt', 'examples/data_test/musclevshep_intersect.txt'] intron_column_index=8 k=5 level=gene lnc_ids_from_gff=True min_id_overlap=0.95 mode=strict outdir=examples/output_test write_gff_provenance=False
+# inputs (md5  bytes  path):
+#   2b9e422c5ef67de99eaefe6b74d09b31  191504969  GCF_003789085.1_ASM378908v1_genomic.gff
+#   f697b30a10664c9ef500149db94925e9  1159951  examples/data_test/hemocytesvsgills_intersect.txt
+#   dd8732bf6d529fd90ea8ff9681e82d23  1279837  examples/data_test/hepvsgills_intersect.txt
+#   b060609f07cf6f57134af0699446b9f5  2238234  examples/data_test/hepvshemocytes_intersect.txt
+#   e6cb84e93320aa6b65b704340d7eff03  945631  examples/data_test/musclevsgills_intersect.txt
+#   a8b12143942996ace5d632caa00eefa6  1929034  examples/data_test/musclevshemocytes_intersect.txt
+#   c4e4076bd4379d5e455538b956b96a61  1876754  examples/data_test/musclevshep_intersect.txt
 key	value
-gff	/Users/yahelgb/Desktop/projects/lncker/examples/data_test/GCF_003789085.1_ASM378908v1_genomic.gff
+gff	GCF_003789085.1_ASM378908v1_genomic.gff
 exclusive_level	gene
 intersect_files_count	6
 unique_comparisons_detected	12

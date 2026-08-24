@@ -8,6 +8,7 @@ from typing import Iterable, List
 
 from lncker.gff_utils import iter_gff, norm_rna_id
 from lncker.io_utils import iter_tsv_rows
+from lncker.provenance import Provenance
 
 
 def geometric_mean(values: Iterable[float]) -> float:
@@ -81,9 +82,16 @@ def _compute_intergenic_rows(genes: List[GeneSpan]) -> List[dict[str, object]]:
     return out
 
 
-def _write_tsv(path: Path, fieldnames: list[str], rows: Iterable[dict[str, object]]) -> None:
+def _write_tsv(
+    path: Path,
+    fieldnames: list[str],
+    rows: Iterable[dict[str, object]],
+    prov: "Provenance | None" = None,
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as f:
+        if prov is not None:
+            prov.write_header(f)
         writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter="\t")
         writer.writeheader()
         for row in rows:
@@ -94,6 +102,7 @@ def run_intergenic_stats(
     gff: Path,
     out_summary: Path | None = None,
     out_distances: Path | None = None,
+    prov: Provenance | None = None,
 ) -> None:
     genes = _load_genes_from_gff(gff)
     if len(genes) < 2:
@@ -131,16 +140,18 @@ def run_intergenic_stats(
                 {"metric": "median_kb", "value": f"{median_bp / 1000.0:.6f}"},
                 {"metric": "geometric_mean_kb", "value": f"{gmean_bp / 1000.0:.6f}"},
             ],
+            prov=prov,
         )
 
     if out_distances is not None:
-        _write_tsv(out_distances, ["seqid", "gene_A", "gene_B", "distance"], rows)
+        _write_tsv(out_distances, ["seqid", "gene_A", "gene_B", "distance"], rows, prov=prov)
 
 
 def run_intron_stats(
     tsv: Path,
     column_index: int = 8,
     out_summary: Path | None = None,
+    prov: Provenance | None = None,
 ) -> None:
     if column_index < 1:
         raise ValueError("column_index is 1-based and must be >= 1.")
@@ -180,4 +191,5 @@ def run_intron_stats(
                 {"metric": "median_nt", "value": f"{median_nt:.6f}"},
                 {"metric": "geometric_mean_nt", "value": f"{gmean_nt:.6f}"},
             ],
+            prov=prov,
         )

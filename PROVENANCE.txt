@@ -1,0 +1,12 @@
+# Reference annotation provenance
+file: GCF_003789085.1_ASM378908v1_genomic.gff
+bytes: 191504969
+md5: 2b9e422c5ef67de99eaefe6b74d09b31
+accession: NCBI_Assembly:GCF_003789085.1
+annotation_release: NCBI Penaeus vannamei Annotation Release 100
+genome_build: ASM378908v1
+gff_version: 3
+processor: NCBI annotwriter
+download_date: UNKNOWN
+recorded_utc: 2026-08-24T17:30:44Z
+recorded_by: lncker 0.1.0 (bb2cd36-dirty)

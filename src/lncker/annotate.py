@@ -11,6 +11,8 @@ from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
+from lncker.provenance import Provenance
+
 _NCBI_BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 _DEFAULT_DELAY = 0.4  # seconds between NCBI requests (safe without an API key)
 _FIELDNAMES = [
@@ -142,7 +144,12 @@ def _load_de_records_for_tissue(path: Path, positions: set[str]) -> list[_MRNARe
     product_map: dict[str, str] = {}
 
     with path.open(encoding="utf-8") as fh:
-        header = fh.readline().rstrip("\n").split("\t")
+        header: list[str] = []
+        for line in fh:
+            if line.startswith("#"):
+                continue
+            header = line.rstrip("\n").split("\t")
+            break
         idx = {col: i for i, col in enumerate(header)}
         required = {"mRNA_ID", "lncRNA_ID", "mRNA_position", "DE_status", "product"}
         missing = required - idx.keys()
@@ -189,6 +196,7 @@ def run_annotate(
     emapper_db: Path | None = None,
     tax_scope: int | None = None,
     emapper_cpu: int = 4,
+    prov: "Provenance | None" = None,
 ) -> None:
     cis_files = sorted(cis_dir.glob("*_cis_regulation_module_output.txt"))
     if not cis_files:
@@ -222,6 +230,8 @@ def run_annotate(
             )
 
         with out.open("w", encoding="utf-8", newline="") as fh:
+            if prov is not None:
+                prov.write_header(fh)
             writer = csv.DictWriter(fh, fieldnames=_FIELDNAMES, delimiter="\t")
             writer.writeheader()
 

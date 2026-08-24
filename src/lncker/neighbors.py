@@ -8,7 +8,8 @@ from urllib.parse import unquote
 
 from lncker.expr import parse_expression
 from lncker.gff_utils import build_lnc_gene_to_transcripts, norm_rna_id, parse_attrs
-from lncker.io_utils import iter_tsv_rows, open_text
+from lncker.io_utils import is_comment, iter_tsv_rows, open_text
+from lncker.provenance import Provenance
 
 
 @dataclass(frozen=True)
@@ -21,22 +22,26 @@ class Feature:
     attrs: Dict[str, str]
 
 
-def iter_gff_features(gff: Path) -> Iterator[Feature]:
+def iter_gff_features(gff: Path, drops=None) -> Iterator[Feature]:
+    """Same strict, drop-logged parsing as lncker.gff_utils.iter_gff."""
+    from lncker.validate import default_drop_log, parse_gff_record
+
+    log = drops if drops is not None else default_drop_log()
     with open_text(gff) as f:
-        for line in f:
+        for lineno, line in enumerate(f, start=1):
             if not line.strip() or line.startswith("#"):
                 continue
-            parts = line.rstrip("\n").split("\t")
-            if len(parts) < 9:
+            rec = parse_gff_record(line, lineno, log)
+            if rec is None:
                 continue
-            contig, _src, ftype, start, end, _score, strand, _phase, attrs = parts
+            contig, _src, ftype, start, end, strand, _phase, attrs_s = rec
             yield Feature(
                 contig=contig,
                 ftype=ftype,
-                start=int(start),
-                end=int(end),
+                start=start,
+                end=end,
                 strand=strand,
-                attrs=parse_attrs(attrs),
+                attrs=parse_attrs(attrs_s),
             )
 
 
@@ -47,6 +52,8 @@ def load_exclusive_lncs(files: List[Path]) -> Dict[str, Set[str]]:
         s: Set[str] = set()
         with p.open("r", encoding="utf-8", errors="replace") as f:
             for line in f:
+                if is_comment(line):
+                    continue
                 x = line.strip()
                 if x:
                     s.add(x)
@@ -199,6 +206,7 @@ def run_neighbors(
     out_tsv: Path,
     k: int = 5,
     exclusive_level: str = "transcript",
+    prov: "Provenance | None" = None,
 ) -> None:
     if exclusive_level not in {"transcript", "gene"}:
         raise ValueError("exclusive_level must be 'transcript' or 'gene'")
@@ -276,6 +284,8 @@ def run_neighbors(
     cis_rows_by_tissue: Dict[str, List[List[str]]] = {t: [] for t in tissue_to_lncs.keys()}
 
     with out_tsv.open("w", encoding="utf-8", newline="") as fo:
+        if prov is not None:
+            prov.write_header(fo)
         w = csv.writer(fo, delimiter="\t")
         w.writerow([
             "tissue",
@@ -363,6 +373,8 @@ def run_neighbors(
     for tissue, rows in cis_rows_by_tissue.items():
         out_cis = out_tsv.parent / f"{tissue}_cis_regulation_module_output.txt"
         with out_cis.open("w", encoding="utf-8", newline="") as fo:
+            if prov is not None:
+                prov.write_header(fo)
             w = csv.writer(fo, delimiter="\t")
             w.writerow([
                 "Contig",
@@ -380,6 +392,8 @@ def run_neighbors(
                 w.writerow(r)
 
     with summary_path.open("w", encoding="utf-8") as s:
+        if prov is not None:
+            prov.write_header(s)
         s.write("key\tvalue\n")
         s.write(f"gff\t{gff}\n")
         s.write(f"exclusive_level\t{exclusive_level}\n")

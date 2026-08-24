@@ -1,0 +1,3 @@
+ID	baseMean	log2FoldChange	padj	Expression
+XM_004.1	100.0	2.5	0.001	Up_B_Down_C
+XM_005.1	110.0	-2.5	0.001	Down_B_Up_C

@@ -2,9 +2,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterator, Set, Tuple
+from typing import TYPE_CHECKING, Dict, Iterator, Set, Tuple
 
 from lncker.io_utils import open_text
+
+if TYPE_CHECKING:
+    from lncker.validate import DropLog
 
 
 @dataclass(frozen=True)
@@ -32,20 +35,29 @@ def norm_rna_id(raw: str) -> str:
     return raw[4:] if raw.startswith("rna-") else raw
 
 
-def iter_gff(gff: Path) -> Iterator[GffFeature]:
+def iter_gff(gff: Path, drops: "DropLog | None" = None) -> Iterator[GffFeature]:
+    """Yield every well-formed feature.
+
+    A record that cannot be parsed is reported to the drop log and skipped --
+    never silently ignored, and never allowed to raise. Pass ``drops`` to
+    collect the counts; otherwise they go to the process-wide log.
+    """
+    from lncker.validate import default_drop_log, parse_gff_record
+
+    log = drops if drops is not None else default_drop_log()
     with open_text(gff) as f:
-        for line in f:
+        for lineno, line in enumerate(f, start=1):
             if not line.strip() or line.startswith("#"):
                 continue
-            parts = line.rstrip("\n").split("\t")
-            if len(parts) < 9:
+            rec = parse_gff_record(line, lineno, log)
+            if rec is None:
                 continue
-            contig, _src, ftype, start, end, _score, strand, _phase, attrs_s = parts
+            contig, _src, ftype, start, end, strand, _phase, attrs_s = rec
             yield GffFeature(
                 contig=contig,
                 ftype=ftype,
-                start=int(start),
-                end=int(end),
+                start=start,
+                end=end,
                 strand=strand,
                 attrs=parse_attrs(attrs_s),
             )
@@ -152,9 +164,17 @@ def build_lnc_gene_to_transcripts(gff: Path) -> Dict[str, Set[str]]:
     return out
 
 
-def write_extract_ids_summary(path: Path, gff: Path, level: str, stats: Dict[str, int]) -> None:
+def write_extract_ids_summary(
+    path: Path,
+    gff: Path,
+    level: str,
+    stats: Dict[str, int],
+    prov: "object | None" = None,
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
+        if prov is not None:
+            prov.write_header(f)
         f.write("key\tvalue\n")
         f.write(f"gff\t{gff}\n")
         f.write(f"level\t{level}\n")

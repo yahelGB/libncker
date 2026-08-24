@@ -1,17 +1,54 @@
+import csv
+import itertools
 import os
+import re
+import sys
 
-configfile: "config.yaml"
+# Anchor the run to the workflow directory so `snakemake -s /path/to/Snakefile`
+# behaves identically from any cwd, while every path below stays relative --
+# which is what makes `snakemake results/stats/X.seqkit` work as a target.
+WORKFLOW_DIR = os.path.dirname(os.path.abspath(workflow.snakefile))
+
+workdir: WORKFLOW_DIR
+
+configfile: os.path.join(WORKFLOW_DIR, "config.yaml")
+
+
+def die(msg):
+    """Abort at parse time with an actionable message instead of a traceback."""
+    raise WorkflowError("\n".join(["", "=" * 72, msg.rstrip(), "=" * 72]))
+
+
+def require_config(*keys):
+    node, seen = config, []
+    for k in keys:
+        seen.append(k)
+        if not isinstance(node, dict) or k not in node:
+            die(f"config.yaml is missing the required key: {'.'.join(seen)}")
+        node = node[k]
+    return node
+
+
+for _required in (("aligner",), ("paths", "data_dir"), ("paths", "output_dir"),
+                  ("paths", "genome"), ("metadata",), ("python_bin",),
+                  ("deseq2", "padj"), ("deseq2", "log2fc"), ("deseq2", "min_counts")):
+    require_config(*_required)
 
 ALIGNER = config["aligner"]
 LAYOUT  = config.get("layout", "paired")   # "paired" or "single"
 
-# paths — all sourced from config.yaml
+# paths — all sourced from config.yaml, all relative to WORKFLOW_DIR (see workdir:)
 data_dir     = config["paths"]["data_dir"]
 out          = config["paths"]["output_dir"]
-genome_dir   = config["paths"]["genome"]
-annotation_gtf   = config["paths"]["annotation"]
-splice_sites_file = config["paths"]["splice_sites"]
-USE_GTF          = bool(annotation_gtf) and os.path.isfile(annotation_gtf)
+genome_fasta = config["paths"]["genome"]
+genome_dir   = genome_fasta                      # kept: used as the bwa index prefix
+annotation_gtf    = config["paths"].get("annotation", "")
+splice_sites_file = config["paths"].get("splice_sites", "")
+USE_GTF           = bool(annotation_gtf) and os.path.isfile(annotation_gtf)
+
+metadata_file = config["metadata"]
+scripts_dir   = "scripts"
+python_bin    = config["python_bin"]
 
 synced_dir   = os.path.join(out, "raw_data_synced")
 fastqc_dir   = os.path.join(out, "fastqc_reports")
@@ -25,13 +62,23 @@ ht2_index_prefix = os.path.join(out, "index_genome_ht2", "genome")
 bt2_index_prefix = os.path.join(out, "index_genome_bt2", "genome")
 
 # sample detection
+if LAYOUT not in ("paired", "single"):
+    die(f"Unknown layout '{LAYOUT}' in config.yaml. Choose: paired, single")
+
+if not os.path.isdir(data_dir):
+    die(
+        f"FASTQ directory not found: {os.path.abspath(data_dir)}\n"
+        f"  (config.yaml paths.data_dir = {data_dir!r}, resolved against {WORKFLOW_DIR})\n"
+        f"Create it and put your reads there, or point paths.data_dir at the right place."
+    )
+
 if LAYOUT == "paired":
     SAMPLES = sorted({
         fn.split("_")[0]
         for fn in os.listdir(data_dir)
         if fn.endswith("_1.fastq.gz") or fn.endswith("_2.fastq.gz")
     })
-elif LAYOUT == "single":
+else:
     SAMPLES = sorted({
         fn[:-len(".fastq.gz")]
         for fn in os.listdir(data_dir)
@@ -39,8 +86,76 @@ elif LAYOUT == "single":
         and not fn.endswith("_1.fastq.gz")
         and not fn.endswith("_2.fastq.gz")
     })
-else:
-    raise ValueError(f"Unknown layout '{LAYOUT}'. Choose: paired, single")
+
+if not SAMPLES:
+    expected = "{sample}_1.fastq.gz / {sample}_2.fastq.gz" if LAYOUT == "paired" else "{sample}.fastq.gz"
+    die(
+        f"No {LAYOUT}-end FASTQ files found in {data_dir}\n"
+        f"Expected filenames of the form: {expected}\n"
+        f"Directory contains: {sorted(os.listdir(data_dir))[:10] or '(empty)'}"
+    )
+
+if LAYOUT == "paired":
+    _incomplete = [
+        s for s in SAMPLES
+        if not (os.path.exists(os.path.join(data_dir, f"{s}_1.fastq.gz"))
+                and os.path.exists(os.path.join(data_dir, f"{s}_2.fastq.gz")))
+    ]
+    if _incomplete:
+        die(
+            "These samples are missing one mate of the pair:\n  "
+            + "\n  ".join(_incomplete)
+            + "\nEvery paired-end sample needs both _1.fastq.gz and _2.fastq.gz."
+        )
+
+# Without this, {sample} matches greedily and Snakemake can derive
+# "{sample}.sorted.bam" from sam_to_bam with sample="X.sorted" -- an endless
+# .sorted.sorted... chain that turns every real error into a nonsensical one.
+wildcard_constraints:
+    sample = "|".join(re.escape(s) for s in SAMPLES)
+
+# --- conditions and pairwise comparisons, mirrored from scripts/deseq2.py ----
+if not os.path.isfile(metadata_file):
+    die(
+        f"Metadata file not found: {os.path.abspath(metadata_file)}\n"
+        f"  (config.yaml metadata = {config['metadata']!r})\n"
+        f"It must be a CSV with columns: sample,condition"
+    )
+
+with open(metadata_file, newline="") as _fh:
+    _reader = csv.DictReader(_fh)
+    if not _reader.fieldnames or "sample" not in _reader.fieldnames or "condition" not in _reader.fieldnames:
+        die(f"{metadata_file} must have 'sample' and 'condition' columns; got {_reader.fieldnames}")
+    METADATA = {r["sample"].strip(): r["condition"].strip() for r in _reader if r.get("sample")}
+
+_unknown = sorted(set(SAMPLES) - set(METADATA))
+if _unknown:
+    die(
+        "These FASTQ samples are not listed in the metadata file:\n  "
+        + "\n  ".join(_unknown)
+        + f"\nAdd them to {metadata_file}, or remove their FASTQs from {data_dir}."
+    )
+
+CONDITIONS = sorted({METADATA[s] for s in SAMPLES})
+if len(CONDITIONS) < 2:
+    die(
+        f"DESeq2 needs at least two conditions; the metadata gives only {CONDITIONS}."
+    )
+# deseq2.py iterates itertools.combinations(sorted(conditions), 2) -- keep in sync.
+PAIRS = [f"{a}vs{b}" for a, b in itertools.combinations(CONDITIONS, 2)]
+
+# merge_counts and deseq2 run through this interpreter; a bad path here used to
+# surface only after every alignment had finished.
+if "/" in config["python_bin"] and not os.path.isfile(python_bin):
+    die(
+        f"python_bin does not exist: {os.path.abspath(python_bin)}\n"
+        f"  (config.yaml python_bin = {config['python_bin']!r})\n"
+        f"Rules merge_counts and deseq2 need it, with pandas / numpy / matplotlib / pydeseq2 installed.\n"
+        f"Create it with:\n"
+        f"    python3 -m venv {os.path.join(WORKFLOW_DIR, '.venv')}\n"
+        f"    {os.path.join(WORKFLOW_DIR, '.venv/bin/pip')} install pandas numpy matplotlib pydeseq2\n"
+        f"or set python_bin to an interpreter that already has them."
+    )
 
 # aligner index configuration
 if ALIGNER == "hisat2":
@@ -71,7 +186,8 @@ rule all:
         expand(f"{stats_dir}/{{sample}}.flagstat",       sample=SAMPLES),
         f"{fastqc_dir}/multiqc_report.html",
         f"{counts_dir}/count_table.txt",
-        directory(deseq2_dir)
+        expand(f"{deseq2_dir}/{{pair}}_intersect.txt", pair=PAIRS),
+        f"{deseq2_dir}/PCA_plot.pdf"
 
 # ── paired-end only rules ────────────────────────────────────────────────────
 
@@ -90,6 +206,16 @@ if LAYOUT == "paired":
             command -v module &>/dev/null && module load programs/seqkit-2.5.1
             THREADS=${{NSLOTS:-$(nproc)}}
             seqkit stats -j $THREADS -T {input.read_1} {input.read_2} > {output.seqkit_output}
+            # seqkit exits 0 even when a FASTQ is unreadable, leaving a
+            # header-only table that repair_files would read as "counts match".
+            rows=$(tail -n +2 {output.seqkit_output} | grep -c . || true)
+            if [ "$rows" -ne 2 ]; then
+                echo "ERROR: seqkit produced $rows data rows for {wildcards.sample}, expected 2." >&2
+                echo "One of the FASTQ files is unreadable or not valid FASTQ:" >&2
+                echo "  {input.read_1}" >&2
+                echo "  {input.read_2}" >&2
+                exit 1
+            fi
             '''
 
     rule repair_files:
@@ -111,6 +237,10 @@ if LAYOUT == "paired":
 
             r1c=$(awk 'NR==2{{print $4}}' {input.seqkit_output})
             r2c=$(awk 'NR==3{{print $4}}' {input.seqkit_output})
+
+            case "$r1c$r2c" in
+                *[!0-9]*|"") echo "ERROR: unusable read counts in {input.seqkit_output} (r1='$r1c' r2='$r2c')" >&2; exit 1 ;;
+            esac
 
             if [ "$r1c" != "$r2c" ]; then
                 echo "[sync] {wildcards.sample}: MISMATCH ($r1c vs $r2c) → repair.sh" &>> {log}
@@ -177,6 +307,12 @@ elif LAYOUT == "single":
             command -v module &>/dev/null && module load programs/seqkit-2.5.1
             THREADS=${{NSLOTS:-$(nproc)}}
             seqkit stats -j $THREADS -T {input.read} > {output.seqkit_output}
+            rows=$(tail -n +2 {output.seqkit_output} | grep -c . || true)
+            if [ "$rows" -ne 1 ]; then
+                echo "ERROR: seqkit produced $rows data rows for {wildcards.sample}, expected 1." >&2
+                echo "{input.read} is unreadable or not valid FASTQ." >&2
+                exit 1
+            fi
             '''
 
     rule fastqc:
@@ -458,46 +594,66 @@ rule flagstat:
         '''
 
 # coverage
+# NOTE: this counts reads per *reference sequence*. config.yaml points `genome`
+# at the RefSeq *_rna.fna transcript FASTA, so one reference == one transcript and
+# column 4 (numreads) is a transcript-level count -- which is what lncker expects.
+# Pointing `genome` at a genomic FASTA would silently yield per-scaffold counts.
 rule coverage:
     input:
         f"{mapped_dir}/{{sample}}.sorted.bam"
     output:
         cov = f"{coverage_dir}/{{sample}}.coverage"
+    log:
+        f"{stats_dir}/{{sample}}.coverage.log"
     shell:
         '''
         set +u
         source ~/.bashrc
         command -v module &>/dev/null && module load programs/samtools-1.10
-        samtools coverage {input} | awk '{{print $1"\t"$4}}' > {output}
+        samtools coverage {input} 2> {log} | awk '{{print $1"\t"$4}}' > {output}
         '''
 
 # count table — merges all per-sample coverage files into genes × samples matrix
 rule merge_counts:
     input:
-        expand(f"{coverage_dir}/{{sample}}.coverage", sample=SAMPLES)
+        coverage = expand(f"{coverage_dir}/{{sample}}.coverage", sample=SAMPLES),
+        script   = f"{scripts_dir}/merge_counts.py"
     output:
         f"{counts_dir}/count_table.txt"
+    log:
+        f"{stats_dir}/merge_counts.log"
     params:
         module     = config["modules"]["python"],
-        python_bin = config["python_bin"]
+        python_bin = python_bin
     shell:
         '''
         set +u
         source ~/.bashrc
         command -v module &>/dev/null && module load {params.module}
-        {params.python_bin} scripts/merge_counts.py {output} {input}
+        {params.python_bin} {input.script} {output} {input.coverage} &> {log}
         '''
 
 # DESeq2 — runs all pairwise comparisons, writes one *_intersect.txt per pair
+# The *_intersect.txt files are lncker's input, so they are declared explicitly
+# rather than hidden inside a directory() output: that keeps them in the DAG and
+# lets Snakemake tell a complete run from a partial one.
 rule deseq2:
     input:
         counts   = f"{counts_dir}/count_table.txt",
-        metadata = config["metadata"]
+        metadata = metadata_file,
+        script   = f"{scripts_dir}/deseq2.py"
     output:
-        directory(deseq2_dir)
+        intersects = expand(f"{deseq2_dir}/{{pair}}_intersect.txt", pair=PAIRS),
+        results    = expand(f"{deseq2_dir}/{{pair}}_results.txt", pair=PAIRS),
+        normalized = expand(f"{deseq2_dir}/{{pair}}_normalized_counts.txt", pair=PAIRS),
+        ma_plots   = expand(f"{deseq2_dir}/{{pair}}_MA_plot.pdf", pair=PAIRS),
+        pca        = f"{deseq2_dir}/PCA_plot.pdf"
+    log:
+        f"{stats_dir}/deseq2.log"
     params:
         module     = config["modules"]["python"],
-        python_bin = config["python_bin"],
+        python_bin = python_bin,
+        outdir     = deseq2_dir,
         padj       = config["deseq2"]["padj"],
         log2fc     = config["deseq2"]["log2fc"],
         min_counts = config["deseq2"]["min_counts"]
@@ -506,13 +662,15 @@ rule deseq2:
         set +u
         source ~/.bashrc
         command -v module &>/dev/null && module load {params.module}
-        mkdir -p {output}
-        {params.python_bin} scripts/deseq2.py \
-            {input.counts} {input.metadata} {output} \
-            {params.padj} {params.log2fc} {params.min_counts}
+        mkdir -p {params.outdir}
+        {params.python_bin} {input.script} \
+            {input.counts} {input.metadata} {params.outdir} \
+            {params.padj} {params.log2fc} {params.min_counts} &> {log}
         '''
 
-# cleaning
+# cleaning -- only ever run explicitly: `snakemake clean`
+localrules: clean
+
 rule clean:
     shell:
         '''
